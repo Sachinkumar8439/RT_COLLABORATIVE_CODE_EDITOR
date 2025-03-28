@@ -1,0 +1,148 @@
+/* Container Styling */
+.main-editor {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+.resizable-container {
+  width: 50%;
+  position: relative;
+  background-color: #04181ef8;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: auto;
+  user-select: none;
+  height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Content Styling */
+.content-area {
+  /* padding: 10px; */
+  width: 100%;
+  height: 100%;
+  background-color: #04181ef8;
+  color: white;
+}
+.content {
+  flex: 1;
+  /* font-size: 1.2rem; */
+  /* font-weight: bold; */
+  overflow: auto;
+}
+
+/* Resizer Styling */
+.resizer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 5px;
+  height: 100%;
+  background-color: #9e8f8f;
+  cursor: col-resize;
+}
+.input-output-container {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: #04181ef8;
+}
+
+.resizer-b {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background-color: #9e8f8f;
+  cursor: row-resize;
+}
+
+.inputsection-container {
+  position: relative;
+  background-color: aquamarine;
+  height: 50%;
+}
+.outputsection-container {
+  position: relative;
+  flex: 1;
+}
+
+.inner-navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 20px;
+  background-color: #f4f5f5;
+}
+.inner-nav-list {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.inner-navbar li {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.run-button {
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: rgb(19, 19, 18);
+  background-color: rgb(216, 224, 225);
+  box-shadow: 2px 2px rgba(0, 0, 0, 0.5);
+  border: none;
+  cursor: pointer;
+  align-self: flex-end;
+  margin: 2px 10px;
+  margin-bottom: 6px;
+}
+.run-button:hover {
+  background-color: #7eaee4;
+  /* color:black; */
+}
+
+.textarea {
+  display: flex;
+  flex-direction: column;
+}
+.menu-item:hover {
+  background-color: #b6b9bc;
+}
+
+#coding-languages {
+  /* width: 200px; */
+  padding: 3px;
+  border-radius: 5px;
+  font-size: 14px;
+  /* color: #090f33; */
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#coding-languages option {
+  background-color: #eff6fc;
+  color: black;
+  border-radius: 10px;
+}
+
+#coding-languages:hover {
+  border-color: #ffffff;
+  background-color: #4f4646;
+  color: white;
+}
+
+#coding-languages option {
+  padding: 8px;
+  color: #0a1e41;
+  background-color: #ffffff;
+}
