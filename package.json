@@ -1,0 +1,28 @@
+{
+  "name": "rtcce",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject",
+    "start:client": "npm start --prefix client",
+    "start:server": "npm run dev --prefix server",
+    "dev": "concurrently -n \"client,server\" -c \"bgBlue,bgYellow\" \"npm run start:client\" \"npm run start:server\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lovekush-1509/RTCCE.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lovekush-1509/RTCCE/issues"
+  },
+  "homepage": "https://github.com/Lovekush-1509/RTCCE#readme",
+  "dependencies": {
+    "monaco-editor": "^0.52.2"
+  }
+}
