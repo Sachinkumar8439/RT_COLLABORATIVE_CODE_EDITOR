@@ -1,23 +1,27 @@
 import apiRequest from "../API/api";
 const BASE_URL = "http://localhost:4000/rtcce/version-1.0";
 
-const createuser = async (route, name, username, email, password) => {
-  if (!route || !username || !name || !email || !password) {
-    throw new Error(
-      "All parameters (name,username,email,password) are required."
-    );
-  }
+const createuser = async (route,data) => {
 
   try {
-    const response = await apiRequest("post", `${BASE_URL}${route}`, {
-      name,
-      username,
-      email,
-      password,
-    });
+    const response = await apiRequest("post", `${BASE_URL}${route}`, data);
     return response;
+    
   } catch (error) {
     console.error("Error in createProgram:", error.message);
+    throw error;
+  }
+};
+
+
+const loginuser = async (route,data) => {
+
+  try {
+    const response = await apiRequest("post", `${BASE_URL}${route}`, data);
+    return response;
+
+  } catch (error) {
+    console.error("Error login user:", error.message);
     throw error;
   }
 };
@@ -56,6 +60,7 @@ const deleteuser = async (route, userkey) => {
 };
 
 const userControllers = {
+  loginuser,
   createuser,
   edituser,
   deleteuser,

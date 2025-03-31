@@ -33,17 +33,20 @@
 
 .hero-button {
   padding: 10px 20px;
-  background-color:rgb(8, 59, 74);
+  background-color:rgb(255, 255, 255);
   border: none;
-  color: rgb(169, 160, 160);
+  color: rgb(28, 26, 26);
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  box-shadow:5px 10px #032958;
+  transition: background-color 0.1s ease;
+  box-shadow:2px 2px #252323;
 }
 
 .hero-button:hover {
-  background-color: #2d3f47;
+  background-color: #0482a4;
+  box-shadow:2px 2px #fefefe;
+  color: white;
+  font-size: 15px;
 }
 
 .hero-right {
