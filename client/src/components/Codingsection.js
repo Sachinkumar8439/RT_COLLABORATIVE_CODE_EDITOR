@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import program from "../Controllers/program";
 import burgerimage from "../media/Images/menu-burger.png";
 import DropdownMenu from "./Dropdownmenu";
+import { StateContext } from "../Context/usecontext";
 import Editor from "@monaco-editor/react";
 import { monacoFormatLang, monaceThemes, editorOptions } from "../data";
 
 const Codingsection = ({ socket }) => {
+  const { setoutput } = useContext(StateContext);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [dimensions, setDimensions] = useState({ width: 60, height: 100 });
@@ -19,8 +21,10 @@ const Codingsection = ({ socket }) => {
   const [defaultCode, setdefaultCode] = useState(
     monacoFormatLang[0].defaultCode
   );
+
   const [languages, setlanguages] = useState(monacoFormatLang);
-  const [content, setcontent] = useState(null);
+  const [content, setcontent] = useState("");
+  const [langCode,setLangCode] = useState(0);
 
   const handleBurgerClick = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -38,9 +42,7 @@ const Codingsection = ({ socket }) => {
 
   const handleMouseMove = (e) => {
     if (!isResizing) return;
-
     const dx = e.clientX - startPos.x;
-
     setDimensions((prev) => ({
       width: Math.max(10, prev.width + (dx / window.innerWidth) * 100),
     }));
@@ -56,18 +58,18 @@ const Codingsection = ({ socket }) => {
   const handleselectchange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     if (selectedOption.text === language) return;
+    const selectedLang = monacoFormatLang.find(lang => lang.name === e.target.value);
+    setcontent(selectedLang.defaultCode);
     setlanguage(selectedOption.text);
     setdefaultCode(selectedOption.getAttribute("data-defaultcode"));
-    if(content !== null && content.length ===0)
-    {
-      setcontent(selectedOption.getAttribute("data-defaultcode"));
-    }
+    setLangCode(selectedOption.getAttribute("data-lang_code"));
+    // if(content === ""){
+      // }
   };
 
   useEffect(() => {
     socket.on("get-updated-code", (data) => {
       console.log("this get updated code works", data.value);
-
       setcontent(`${data.value}`);
     });
 
@@ -88,7 +90,7 @@ const Codingsection = ({ socket }) => {
     >
       <div className="inner-navbar">
         <span>
-          <strong style={{ fontSize: "30px" }}>RC</strong>
+          <strong style={{ fontSize: "30px" }}>RT</strong>
           <strong style={{ color: "tomato" }}>code_EDITOR</strong>
         </span>
         <ul className="inner-nav-list">
@@ -111,6 +113,7 @@ const Codingsection = ({ socket }) => {
                   key={index}
                   value={val.name}
                   data-defaultcode={val.defaultCode}
+                  data-lang_code = {val.id}
                 >
                   {val.name}
                 </option>
@@ -154,7 +157,7 @@ const Codingsection = ({ socket }) => {
             socket.emit("send-updated-code", { value });
           }}
           options={editorOptions}
-          value={typeof content === "string" && content.length >=0 ? content : defaultCode}
+          value={content}
           language={language}
           theme={theme}
           defaultLanguage={language}
@@ -162,16 +165,18 @@ const Codingsection = ({ socket }) => {
       </div>
       <button
         className="run-button"
-        onClick={(e) => {
+        onClick={async (e) => {
           e.preventDefault();
           if (!language || !content) {
             alert("please select language or check your content not be empty");
             return;
           }
-          const response = program.getoutput("/output", content, language);
-          if (response.success) {
-            console.log(response.data);
-          }
+          const response = await program.getoutput("/output", content, langCode);
+          // if (response.success) {
+            console.log("output Response:",response.data);
+            setoutput(response.data.output);
+
+          // }
         }}
       >
         run code

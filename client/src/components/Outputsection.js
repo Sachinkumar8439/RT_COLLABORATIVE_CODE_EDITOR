@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 const Outputsection = ({data}) => {
   console.log('data',data);
-  
-
-
   return (
     <div className='outputsection-container'>
         <div className='output-content content-area'>
