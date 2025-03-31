@@ -1,7 +1,3 @@
-<<<<<<< HEAD
 # Ignore node_modules for both client and server
 client/node_modules/
 server/node_modules/
-=======
-node_modules
->>>>>>> 7ea0147464ee0c5f6a43f93a054c9460102f1c1c
