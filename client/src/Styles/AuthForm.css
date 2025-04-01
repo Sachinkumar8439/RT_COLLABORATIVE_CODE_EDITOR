@@ -1,4 +1,4 @@
-/* Auth Form Container */
+
 .auth-container {
     min-height: 100vh;
     display: flex;
@@ -8,7 +8,7 @@
     padding: 20px;
   }
   
-  /* Form Container */
+
   .form-container {
     width: 100%;
     max-width: 400px;
@@ -19,14 +19,13 @@
     text-align: center;
   }
   
-  /* Title */
+
   .form-title {
     font-size: 24px;
     font-weight: bold;
     color: #0d9488;
   }
-  
-  /* Social Buttons */
+ 
   .social-buttons {
     display: flex;
     justify-content: center;
@@ -47,13 +46,13 @@
     background: #d1d5db;
   }
   
-  /* Form Description */
+  
   .form-description {
     margin-top: 15px;
     color: #6b7280;
   }
   
-  /* Input Fields */
+
   .input {
     width: 100%;
     padding: 12px;
@@ -69,7 +68,7 @@
     box-shadow: 0 0 5px rgba(13, 148, 136, 0.3);
   }
   
-  /* Select Box */
+ 
   .select {
     width: 100%;
     padding: 12px;
@@ -85,7 +84,6 @@
     cursor: pointer;
   }
   
-  /* Error Message */
   .error {
     font-size: 12px;
     color: red;
@@ -93,7 +91,7 @@
     margin-top: 10px;
   }
   
-  /* Submit Button */
+  
   .submit-btn {
     width: 100%;
     background: #14b8a6;
@@ -111,7 +109,7 @@
     background: #0d9488;
   }
   
-  /* Switch Login/Signup */
+
   .switch-text {
     margin-top: 15px;
   }
