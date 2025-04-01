@@ -1,14 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { StateContext } from "../Context/usecontext";
 
 const Inputsection = () => {
   const [dimensions, setDimensions] = useState({ width: 60, height: 50 });
   const [isResizing, setIsResizing] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const {input,setInput} = useContext(StateContext);
 
   const handleMouseDown = (e) => {
     setIsResizing(true);
     setStartPos({ x: e.clientX, y: e.clientY });
   };
+
+  const inputSetter = (e) =>{
+    setInput(e.target.innerText);
+  }
+
+  // useEffect(() => {
+  //   // alert("Updated Input: " + input);
+  // }, [input]);
 
   const handleMouseMove = (e) => {
     if (!isResizing) return;
@@ -36,9 +46,11 @@ const Inputsection = () => {
       onMouseLeave={handleMouseUp}
     >
       <div className="input-content content-area">
-        <p style={{padding:"3px"}}>
-        Enter the value for a = 25 <br></br>
-        Enter the value for b = 20
+        <p style={{padding:"3px"}} contentEditable="true" 
+          data-input={input}
+          onInput={inputSetter}
+        >
+          {input}
         </p>
       </div>
       <div className="resizer-b" onMouseDown={handleMouseDown}></div>

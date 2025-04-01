@@ -74,7 +74,7 @@ const loadPrograms = async (route, userKey, programkey = null) => {
   }
 };
 
-const getoutput = async (route, program, langCode) => {
+const getoutput = async (route, program, langCode,userStdin) => {
   if (!route || !program || !langCode) {
     throw new Error("All parameters (userKey,) are required.");
   }
@@ -83,6 +83,7 @@ const getoutput = async (route, program, langCode) => {
     const response = await apiRequest("post", `${BASE_URL}${route}`, {
       program,
       langCode,
+      userStdin,
     });
     return response;
   } catch (error) {

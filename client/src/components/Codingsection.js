@@ -8,6 +8,7 @@ import { monacoFormatLang, monaceThemes, editorOptions } from "../data";
 
 const Codingsection = ({ socket }) => {
   const { setoutput } = useContext(StateContext);
+  const { input } = useContext(StateContext);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [dimensions, setDimensions] = useState({ width: 60, height: 100 });
@@ -171,7 +172,7 @@ const Codingsection = ({ socket }) => {
             alert("please select language or check your content not be empty");
             return;
           }
-          const response = await program.getoutput("/output", content, langCode);
+          const response = await program.getoutput("/output", content, langCode,input);
           // if (response.success) {
             console.log("output Response:",response.data);
             setoutput(response.data.output);

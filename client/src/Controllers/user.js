@@ -4,7 +4,14 @@ const BASE_URL = "http://localhost:4000/rtcce/version-1.0";
 const createuser = async (route,data) => {
 
   try {
-    const response = await apiRequest("post", `${BASE_URL}${route}`, data);
+    const apiFrndlyData = {
+      Name: data.name,
+      UserName : data.userName,
+      Email: data.email,
+      Password: data.password,
+    }
+    console.log("apiFrndlyData:",apiFrndlyData)
+    const response = await apiRequest("post", `${BASE_URL}${route}`, apiFrndlyData);
     return response;
     
   } catch (error) {

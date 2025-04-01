@@ -8,10 +8,9 @@ export default function AuthForm() {
   const navigate = useNavigate();
   const [islogin, setislogin] = useState(false);
   const [data, setdata] = useState({
+    name:"",
     userName: "",
     email: "",
-    firstName: "",
-    lastName: "",
     password: "",
     confirmPassword: "",
   });
@@ -33,7 +32,11 @@ export default function AuthForm() {
       return;
     }
 
-    const result = await userControllers.createuser('route here',data);
+    if(data.confirmPassword !== data.password){
+      alert("confirm Password and Password Should be Same");
+      return;
+    }
+    const result = await userControllers.createuser('/sign-up',data);
     if (result.success) {
       console.log("result", result);
       navigate(`/editor/${result.user._id}`, { state: result.user });
@@ -62,20 +65,14 @@ export default function AuthForm() {
             <>
               <input
                 type="text"
-                placeholder="First Name"
+                placeholder="Name"
                 required
                 className="input"
                 onChange={(e) =>
-                  setdata({ ...data, firstName: e.target.value })
+                  setdata({ ...data, name: e.target.value })
                 }
               />
-              <input
-                type="text"
-                placeholder="Last Name"
-                required
-                className="input"
-                onChange={(e) => setdata({ ...data, lastName: e.target.value })}
-              />
+              
               <input
                 type="text"
                 placeholder="Username"
