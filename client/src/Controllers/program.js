@@ -79,6 +79,8 @@ const getoutput = async (route, program, langCode,userStdin) => {
     throw new Error("All parameters (userKey,) are required.");
   }
 
+    // alert("userStdnin:",userStdin);
+
   try {
     const response = await apiRequest("post", `${BASE_URL}${route}`, {
       program,

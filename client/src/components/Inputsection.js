@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { StateContext } from "../Context/usecontext";
 
 const Inputsection = () => {
@@ -6,6 +6,7 @@ const Inputsection = () => {
   const [isResizing, setIsResizing] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const {input,setInput} = useContext(StateContext);
+  const divRef = useRef(null);
 
   const handleMouseDown = (e) => {
     setIsResizing(true);
@@ -13,12 +14,41 @@ const Inputsection = () => {
   };
 
   const inputSetter = (e) =>{
+    // alert("innerText:",e.target.value)
     setInput(e.target.innerText);
+    // if (!divRef.current) return; // Ensure ref exists
+
+    // const selection = window.getSelection();
+    // if (!selection.rangeCount) return; // Ensure selection exists
+
+    // const range = selection.getRangeAt(0);
+
+    // // Save cursor position
+    // const cursorPosition = range.startOffset;
+
+    // // Ensure div has text content
+    // if (divRef.current.childNodes.length === 0) {
+    //   divRef.current.appendChild(document.createTextNode(""));
+    // }
+
+    // // Restore cursor position safely
+    // const textNode = divRef.current.childNodes[0];
+    // const newRange = document.createRange();
+    // newRange.setStart(textNode, Math.min(cursorPosition, textNode.length));
+    // newRange.setEnd(textNode, Math.min(cursorPosition, textNode.length));
+
+    // selection.removeAllRanges();
+    // selection.addRange(newRange);
   }
 
-  // useEffect(() => {
-  //   // alert("Updated Input: " + input);
-  // }, [input]);
+//   const put = () =>{
+//     alert(input);
+//   }
+
+//  useEffect (() =>{
+//   put();
+//  },[input]);
+
 
   const handleMouseMove = (e) => {
     if (!isResizing) return;

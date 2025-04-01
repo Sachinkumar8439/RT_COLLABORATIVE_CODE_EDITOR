@@ -175,6 +175,7 @@ const Codingsection = ({ socket }) => {
           const response = await program.getoutput("/output", content, langCode,input);
           // if (response.success) {
             console.log("output Response:",response.data);
+            alert("input:",input);
             setoutput(response.data.output);
 
           // }

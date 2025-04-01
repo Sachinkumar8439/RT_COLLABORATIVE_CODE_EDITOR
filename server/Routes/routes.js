@@ -17,6 +17,10 @@ const {
     LogIn,
 } = require("../controllers/Auth");
 
+const {
+    auth,
+} = require("../controllers/Auth")
+
 router.post('/output',CodeOutput);
 router.get('/get-languages',getLanguages);
 
