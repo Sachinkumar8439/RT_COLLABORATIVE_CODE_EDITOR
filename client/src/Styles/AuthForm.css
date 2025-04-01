@@ -87,8 +87,9 @@
   
   /* Error Message */
   .error {
+    font-size: 12px;
     color: red;
-    text-decoration: underline;
+    /* text-decoration: no; */
     margin-top: 10px;
   }
   
