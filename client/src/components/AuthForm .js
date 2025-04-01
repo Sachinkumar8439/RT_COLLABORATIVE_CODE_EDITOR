@@ -19,7 +19,7 @@ export default function AuthForm() {
     e.preventDefault();
     console.log("data", data);
     if (islogin) {
-      const result = await userControllers.loginuser("route here", {
+      const result = await userControllers.loginuser("/log-in", {
         email: data.email,
         password: data.password,
       });

@@ -27,6 +27,7 @@ router.delete('/delete-file',deleteFile);
 
 
 router.post('/sign-up',SignUp);
+router.post('/log-in',LogIn);
 
 
 module.exports = router;

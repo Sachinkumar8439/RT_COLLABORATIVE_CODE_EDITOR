@@ -22,9 +22,13 @@ const createuser = async (route,data) => {
 
 
 const loginuser = async (route,data) => {
-
   try {
-    const response = await apiRequest("post", `${BASE_URL}${route}`, data);
+    const apiFrndlyData = {
+      Email: data.email,
+      Password: data.password,
+    }
+    console.log("apiFrndlyData:",apiFrndlyData)
+    const response = await apiRequest("post", `${BASE_URL}${route}`, apiFrndlyData);
     return response;
 
   } catch (error) {

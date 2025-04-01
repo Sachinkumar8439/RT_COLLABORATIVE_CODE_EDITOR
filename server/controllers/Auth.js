@@ -1,4 +1,5 @@
 const User = require("../Modes/User");
+const jwt = require("jsonwebtoken");
 
 exports.SignUp = async(req,res) =>{
     try{
@@ -57,9 +58,48 @@ exports.SignUp = async(req,res) =>{
 
 exports.LogIn = async(req,res) =>{
     try{
-        const {email,password} = req.body();
+        const {Email,Password} = req.body;
+
+        const isUserExist = await User.findOne({Email:Email});
+        if(!isUserExist){
+            return res.json({
+                success:false,
+                message:"User Not Found, SignUp First",
+            });
+        }
+
+        if(Password !== isUserExist.Password){
+            return res.json({
+                success:false,
+                message:"Password Not Matched",
+            });
+        }
+
+        const payload = {
+            email:isUserExist.Email,
+            id:isUserExist._id,
+        }
+
+        const token = jwt.sign(payload,"Lovekush_Sachin",{
+            expiresIn:"5hr"
+        });
+
+        isUserExist.token = token;
+        const options = {
+            expires:new Date(Date.now(3*24*60*60*1000)),
+            httpOnly:true,
+        }
+
+        return res.cookie("token",token,options).json({
+            success:true,
+            message:"Logged In Successfully",
+            user:isUserExist,
+        })
 
     }catch(e){
-
+        return res.json({
+            success:false,
+            message:e.message,
+        })
     }
 }
