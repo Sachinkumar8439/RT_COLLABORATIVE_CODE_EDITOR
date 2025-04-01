@@ -1,13 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from "react";
+import { StateContext } from "../Context/usecontext";
+import { PulseLoader } from "react-spinners";
+
 
 const Outputsection = ({data}) => {
+  const {isrunning} = useContext(StateContext)
   console.log('data',data);
   return (
     <div className='outputsection-container'>
         <div className='output-content content-area'>
-          <p style={{padding:"4px"}}>
+
+        {  !isrunning ? <p style={{padding:"4px",fontSize:'15px'}}>
             {data.output}
-          </p>
+          </p> : <div style={styles.loaderContainer}>
+      <PulseLoader color="white" size={15} />
+    </div>
+    }
+
+         
         <button onClick={(e)=>{
           e.preventDefault();
           data.setoutput('')
@@ -16,6 +26,15 @@ const Outputsection = ({data}) => {
 
     </div>
   );
+};
+const styles = {
+  loaderContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    width: "100%",  
+  },
 };
 
 export default Outputsection;

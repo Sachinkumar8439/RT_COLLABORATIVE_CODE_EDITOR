@@ -5,10 +5,13 @@ export const StateContext = createContext();
 export const StateProvider = ({ children }) => {
   const [output, setoutput] = useState("output will be shown here");
   const [language, setLanguage] = useState("select language");
-  const [input,setInput] = useState("input");
+  const [input, setInput] = useState("");
+  const [isrunning, setisrunning] = useState(false);
 
   return (
-    <StateContext.Provider value={{ output, setoutput, language, setLanguage,input,setInput }}>
+    <StateContext.Provider
+      value={{isrunning,setisrunning, output, setoutput, language, setLanguage, input, setInput }}
+    >
       {children}
     </StateContext.Provider>
   );

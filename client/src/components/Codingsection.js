@@ -7,8 +7,7 @@ import Editor from "@monaco-editor/react";
 import { monacoFormatLang, monaceThemes, editorOptions } from "../data";
 
 const Codingsection = ({ socket }) => {
-  const { setoutput } = useContext(StateContext);
-  const { input } = useContext(StateContext);
+ 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [dimensions, setDimensions] = useState({ width: 60, height: 100 });
@@ -16,7 +15,7 @@ const Codingsection = ({ socket }) => {
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 
   // main state variables
-
+  const { setoutput ,input ,setisrunning } = useContext(StateContext);
   const [theme, settheme] = useState(localStorage.getItem("theme") || "vs");
   const [language, setlanguage] = useState();
   const [defaultCode, setdefaultCode] = useState(
@@ -172,11 +171,13 @@ const Codingsection = ({ socket }) => {
             alert("please select language or check your content not be empty");
             return;
           }
+          setisrunning(true);
           const response = await program.getoutput("/output", content, langCode,input);
           // if (response.success) {
             console.log("output Response:",response.data);
             alert("input:",input);
             setoutput(response.data.output);
+            setisrunning(false);
 
           // }
         }}
