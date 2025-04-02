@@ -19,14 +19,14 @@ const {
 
 const {
     auth,
-} = require("../controllers/Auth")
+} = require("../middlewares/Auth");
 
 router.post('/output',CodeOutput);
 router.get('/get-languages',getLanguages);
 
 
 router.post('/code-save',saveCode);
-router.get('/get-files',getFiles);
+router.get('/get-files',auth,getFiles);
 router.delete('/delete-file',deleteFile);
 
 

@@ -52,7 +52,9 @@ exports.saveCode = async (req, res) => {
 
 exports.getFiles = async (req, res) => {
   try {
-    const allFiles = await Program.find();
+    const id = req.user.id;
+    console.log("--------------------------------------------------------------------",id);
+    const allFiles = await Program.findById(id);
     return res.json({
       success: true,
       message: "All Files Fetched Successfully",

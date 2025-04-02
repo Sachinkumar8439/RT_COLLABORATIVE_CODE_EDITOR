@@ -83,18 +83,19 @@ exports.LogIn = async(req,res) =>{
         const token = jwt.sign(payload,"Lovekush_Sachin",{
             expiresIn:"5hr"
         });
-
-        isUserExist.token = token;
+        const user = {...isUserExist._doc,token:token};
+        // user.token = token;
+        console.log(token)
         const options = {
-            expires:new Date(Date.now(3*24*60*60*1000)),
+            expires:new Date(Date.now()+3*24*60*60*1000),
             httpOnly:true,
         }
 
         return res.cookie("token",token,options).json({
             success:true,
             message:"Logged In Successfully",
-            user:isUserExist,
-        })
+            user:user,
+        });
 
     }catch(e){
         return res.json({
