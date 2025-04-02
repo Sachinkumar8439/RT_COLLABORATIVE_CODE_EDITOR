@@ -4,7 +4,8 @@ const User = require("../Modes/User");
 exports.auth = async(req,res,next) =>{
     try{
         console.log("inside auth middleware")
-        const token = req.body.token || req.cookies.token || req.header("Authorisation").replace("Bearer ","");
+        console.log("request user token:",req.token)
+        const token = req.body.token || req.cookies.token || req.header("Authorisation").replace("Bearer ","") || req.user.token || req.token;
         if(!token){
             return res.json({
                 success:false,

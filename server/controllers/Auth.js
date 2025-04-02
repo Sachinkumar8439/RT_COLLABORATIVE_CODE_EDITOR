@@ -95,6 +95,7 @@ exports.LogIn = async(req,res) =>{
             success:true,
             message:"Logged In Successfully",
             user:user,
+            token:token,
         });
 
     }catch(e){
