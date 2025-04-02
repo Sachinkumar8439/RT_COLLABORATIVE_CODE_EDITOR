@@ -24,7 +24,7 @@ const Maineditor = () => {
 
   return (
     <div className="main-editor">
-      <CodingSection socket={socket} />
+      <CodingSection socket={socket}/>
       <div className="input-output-container">
         <InputSection />
         <OutputSection data={{ output, setoutput }} />

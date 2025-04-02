@@ -14,32 +14,12 @@ const Inputsection = () => {
   };
 
   const inputSetter = (e) =>{
-    // alert("innerText:",e.target.value)
     setInput(e.target.innerText);
-    // if (!divRef.current) return; // Ensure ref exists
-
-    // const selection = window.getSelection();
-    // if (!selection.rangeCount) return; // Ensure selection exists
-
-    // const range = selection.getRangeAt(0);
-
-    // // Save cursor position
-    // const cursorPosition = range.startOffset;
-
-    // // Ensure div has text content
-    // if (divRef.current.childNodes.length === 0) {
-    //   divRef.current.appendChild(document.createTextNode(""));
-    // }
-
-    // // Restore cursor position safely
-    // const textNode = divRef.current.childNodes[0];
-    // const newRange = document.createRange();
-    // newRange.setStart(textNode, Math.min(cursorPosition, textNode.length));
-    // newRange.setEnd(textNode, Math.min(cursorPosition, textNode.length));
-
-    // selection.removeAllRanges();
-    // selection.addRange(newRange);
   }
+
+
+
+
 
 //   const put = () =>{
 //     alert(input);
@@ -80,7 +60,7 @@ const Inputsection = () => {
           data-input={input}
           onInput={inputSetter}
         >
-          {input}
+         
         </p>
       </div>
       <div className="resizer-b" onMouseDown={handleMouseDown}></div>

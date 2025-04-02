@@ -15,7 +15,7 @@ const Codingsection = ({ socket }) => {
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 
   // main state variables
-  const { setoutput ,input ,setisrunning } = useContext(StateContext);
+  const { setoutput ,input,setInput ,setisrunning } = useContext(StateContext);
   const [theme, settheme] = useState(localStorage.getItem("theme") || "vs");
   const [language, setlanguage] = useState();
   const [defaultCode, setdefaultCode] = useState(
@@ -53,6 +53,25 @@ const Codingsection = ({ socket }) => {
   const handleMouseUp = () => {
     setIsResizing(false);
   };
+
+  
+
+  // useEffect(() => {
+  //   if (isResizing) {
+  //     window.addEventListener("mousemove", handleMouseMove);
+  //     window.addEventListener("mouseup", handleMouseUp);
+  //   } else {
+  //     window.removeEventListener("mousemove", handleMouseMove);
+  //     window.removeEventListener("mouseup", handleMouseUp);
+  //   }
+
+  //   return () => {
+  //     window.removeEventListener("mousemove", handleMouseMove);
+  //     window.removeEventListener("mouseup", handleMouseUp);
+  //   };
+  // }, [isResizing]);
+
+  
 
   // main functions
   const handleselectchange = (e) => {
@@ -172,10 +191,10 @@ const Codingsection = ({ socket }) => {
             return;
           }
           setisrunning(true);
+          // setInput(inputSimp)
           const response = await program.getoutput("/output", content, langCode,input);
           // if (response.success) {
             console.log("output Response:",response.data);
-            alert("input:",input);
             setoutput(response.data.output);
             setisrunning(false);
 
