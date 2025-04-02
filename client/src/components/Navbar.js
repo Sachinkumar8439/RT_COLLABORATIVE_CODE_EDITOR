@@ -10,8 +10,9 @@ const Navbar = () => {
       <div className="navbar-logo">
         <span>
           {" "}
-          <strong style={{ fontSize: "30px" }}>RC</strong>
-          <strong style={{ color: "tomato" }}>code_EDITOR</strong>
+          <h1 style={{fontSize:'15px'}} className="nuxt-title">&lt;<strong style={{fontSize:'20px'}}>RTC</strong>code_EDITOR /&gt;</h1>
+          {/* <strong style={{ fontSize: "30px" }}>RC</strong>
+          <strong style={{ color: "tomato" }}>code_EDITOR</strong> */}
         </span>
       </div>
 

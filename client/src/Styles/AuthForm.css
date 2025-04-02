@@ -2,29 +2,46 @@
 .auth-container {
     min-height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(to right, #d1fae5, #a7f3d0, #6ee7b7);
-    padding: 20px;
+    background-color: rgb(255, 255, 255);
+    /* align-items: center;
+    justify-content: center; */
+    /* padding: 20px; */
   }
   
 
   .form-container {
-    width: 100%;
-    max-width: 400px;
-    background: white;
+    /* height:100vh; */
+    background: rgb(18, 30, 29);
+    /* max-width: 400px; */
     padding: 30px;
-    border-radius: 10px;
+    /* border-radius: 10px; */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+    
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    border-top-left-radius: 30%;
+  }
+  .form{
+    /* background-color: #6b7280; */
+    display: flex;
+    transition: height 0.3s ease, width 1s ease-in ;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 20px;
   }
   
 
+  
   .form-title {
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
-    color: #0d9488;
+    color: #88d2cc;
   }
+  
  
   .social-buttons {
     display: flex;
@@ -47,19 +64,22 @@
   }
   
   
+
   .form-description {
-    margin-top: 15px;
-    color: #6b7280;
+    margin-top: 10px;
+    color: #e8e8e8;
   }
   
 
   .input {
-    width: 100%;
+    color: white;
+    width: 50%;
     padding: 12px;
     margin-top: 10px;
     border: 1px solid #d1d5db;
     border-radius: 5px;
-    background: #f3f4f6;
+    /* background: #f3f4f6; */
+    background: none;
     outline: none;
   }
   
@@ -84,42 +104,86 @@
     cursor: pointer;
   }
   
+
   .error {
     font-size: 12px;
     color: red;
-    /* text-decoration: no; */
+    
     margin-top: 10px;
   }
   
   
   .submit-btn {
-    width: 100%;
-    background: #14b8a6;
+    width: 50%;
+    background:none;
     color: white;
     font-weight: bold;
     padding: 12px;
-    border: none;
     border-radius: 25px;
     cursor: pointer;
     transition: background 0.3s;
     margin-top: 10px;
+    border: 1px solid white;
   }
   
   .submit-btn:hover {
     background: #0d9488;
+    border: none;
   }
   
 
   .switch-text {
     margin-top: 15px;
+    color: white;
   }
   
   .switch-btn {
     background: none;
     border: none;
-    color: #14b8a6;
+    color: #6bc7bc;
     text-decoration: underline;
     cursor: pointer;
     font-size: 14px;
+  }
+  
+
+  .nuxt-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: radial-gradient(circle at top, #0f766e, #000);
+    color: white;
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  
+  .breadcrumbs {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  .nuxt-title {
+    font-size: 48px;
+    font-weight: bold;
+  }
+  
+  .nuxt-description {
+    font-size: 18px;
+    max-width: 500px;
+    color: #aaa;
+  }
+  
+  .tag {
+    color: white;
+    font-weight: bold;
+  }
+  
+  .nuxt-logo {
+    font-size: 32px;
+    margin-top: 20px;
+    color: #10b981;
   }
   

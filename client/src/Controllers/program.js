@@ -63,7 +63,7 @@ const loadPrograms = async (route, userKey, programkey = null) => {
   }
 
   try {
-    const response = await apiRequest("get", `${BASE_URL}${route}`, {
+    const response = await apiRequest("post", `${BASE_URL}${route}`, {
       userKey,
       programkey,
     });

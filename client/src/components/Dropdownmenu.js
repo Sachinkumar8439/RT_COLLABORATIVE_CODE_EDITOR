@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import programs from "../Controllers/program";
 
-const DropdownMenu = ({ isVisible, position, onClose,language }) => {
+const DropdownMenu = ({ isVisible, position, onClose,language,handleOpenPopup }) => {
   const menuRef = useRef();
 
   useEffect(() => {
@@ -12,24 +12,35 @@ const DropdownMenu = ({ isVisible, position, onClose,language }) => {
     };
 
     if (isVisible) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("Click", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isVisible, onClose]);
+      document.removeEventListener("Click", handleClickOutside);
 
-  if (!isVisible) return null;
+
+    };
+  }, [isVisible]);
+
+  if (isVisible === false) return null;
+  let listItems = [];
+  for (let i = 0; i < 5; i++) {
+    listItems.push(
+      <li key={i} style={{ padding: "2px 4px", cursor: "pointer" }}>
+        {i}
+      </li>
+    );
+  }
 
   return (
+    
     <ul
       ref={menuRef}
       style={{
         position: "absolute",
         top: position.y,
-        left: position.x,
-        background: "#fff",
+        left: position.x-80,
+        background: "black",
         border: "1px solid #ccc",
         borderRadius: "5px",
         boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
@@ -37,34 +48,29 @@ const DropdownMenu = ({ isVisible, position, onClose,language }) => {
         padding: "3px",
         margin: 0,
         zIndex: 1000,
-        width: "100px",
+        width: "",
+        color:'white',
       }}
-    >
+      >
+        <input type='text' placeholder="find file"></input>
       <li
         className="menu-item"
         style={{
+          // background:'grey',
           padding: "2px 4px",
           cursor: "pointer",
           whiteSpace: "nowrap",
         }}
         onClick={(e) => {
           e.preventDefault();
-          const programname = prompt("enter the program name");
+          handleOpenPopup();
           onClose();
-          if (programname) {
-            const response = programs.createProgram(
-              "/code-save",
-
-              //  yaha user ka unique key aaega ya fir id hi ye abhi string hai taki eror na aae
-              null,
-              programname,
-              language,
-            );
-          }
         }}
       >
         new file
       </li>
+
+      {listItems}
     </ul>
   );
 };

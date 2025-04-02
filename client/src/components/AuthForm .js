@@ -50,8 +50,21 @@ export default function AuthForm() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="form-container">
+    <div style={{display:'flex'}} className="auth-container">
+      <div style={{flex:'1'}}>
+      <div className="nuxt-container" style={{borderBottomRightRadius:'30%'}}>
+      <p className="breadcrumbs">&gt; Code Fast With Other</p>
+      <h1 className="nuxt-title">&lt; <strong style={{fontSize:'70px'}}>RTC</strong>code_EDITOR /&gt;</h1>
+      <p className="nuxt-description">
+        The <span className="tag">Real Time Collaborative Code_editor</span>
+      </p>
+      <div className="nuxt-logo">&#9650;</div>
+    </div>
+
+      </div>
+      <div 
+     
+      className="form-container">
         <h2 className="form-title">
           {islogin ? "Login Account" : "Create Account"}
         </h2>
@@ -60,7 +73,9 @@ export default function AuthForm() {
             ? "Enter your credentials to login"
             : "Enter data for registration"}
         </p>
-        <form onSubmit={handleSubmit} className="form">
+        <form onSubmit={handleSubmit}  className="form"
+         style={{ height: islogin ? "170px" : "320px",}} 
+        >
           {!islogin && (
             <>
               <input
@@ -115,7 +130,11 @@ export default function AuthForm() {
         </form>
         <p className="switch-text">
           {islogin ? "Don't have an Account?" : "Already have an Account?"}{" "}
-          <button className="switch-btn" onClick={() => setislogin(!islogin)}>
+          <button className="switch-btn" onClick={() => 
+          {
+            seterror(''); setislogin(!islogin)}
+          }
+            >
             {islogin ? "Jump to Signup" : "Jump to Login"}
           </button>
         </p>

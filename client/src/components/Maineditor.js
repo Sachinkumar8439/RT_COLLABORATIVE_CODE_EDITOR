@@ -5,8 +5,11 @@ import InputSection from "./Inputsection";
 import OutputSection from "./Outputsection";
 import "../Styles/Maineditor.css";
 import { useSocket } from "../Context/SocketContetx";
+import { useLocation } from "react-router-dom";
 
 const Maineditor = () => {
+  const location = useLocation();
+  const [user, setuser] = useState(location.state);
   const { output, setoutput } = useContext(StateContext);
   const socket = useSocket();
 
@@ -24,7 +27,7 @@ const Maineditor = () => {
 
   return (
     <div className="main-editor">
-      <CodingSection socket={socket}/>
+      <CodingSection socket={socket} user={user} />
       <div className="input-output-container">
         <InputSection />
         <OutputSection data={{ output, setoutput }} />
