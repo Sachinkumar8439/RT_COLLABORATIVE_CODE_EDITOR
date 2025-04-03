@@ -5,7 +5,7 @@ exports.auth = async(req,res,next) =>{
     try{
         console.log("inside auth middleware")
         console.log("request user token:",req.body.token)
-        const token = req.body.token || req.cookies.token || req.header("Authorization").replace("Bearer ","");
+        const token = req.body.token || req.cookies.token ;
         if(!token){
             return res.json({
                 success:false,

@@ -9,6 +9,7 @@ import { monacoFormatLang, monaceThemes, editorOptions } from "../data";
 import ProgramForm from "./ProgramForm";
 
 const Codingsection = ({ socket ,user }) => {
+  const token = localStorage.getItem('token');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleOpenPopup = () => setIsPopupOpen(true);
@@ -92,13 +93,13 @@ const Codingsection = ({ socket ,user }) => {
       console.log('name ',filename[0],"extention ",filename[1],"length ",filename.length);
       if(filename && filename.length === 2 )
       {
-        const response = await  programs.saveProgram('/code-save',filename[0],filename[1]);
+        const response = await  programs.saveProgram('/code-save',token,filename[0],filename[1]);
         console.log(response);
         
 
         if(response.success)
         {
-          console.log(response);
+          console.log("success hai bhai ",response);
   
         }
       }
@@ -130,7 +131,7 @@ const Codingsection = ({ socket ,user }) => {
   }, [socket]);
 
   const fetchfiles = async () =>{
-    const result = await program.loadPrograms('/get-files');
+    const result = await program.loadPrograms('/get-files',token);
     console.log(result);
     if(result.success)
     {
