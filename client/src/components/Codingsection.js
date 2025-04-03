@@ -230,7 +230,7 @@ const Codingsection = ({ socket ,user }) => {
           const response = await program.getoutput("/output", content, langCode,input);
           // if (response.success) {
             console.log("output Response:",response.data);
-            setoutput(response.data.output);
+            setoutput(response.data);
             setisrunning(false);
 
           // }

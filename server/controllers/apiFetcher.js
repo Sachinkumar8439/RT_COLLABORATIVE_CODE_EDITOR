@@ -47,10 +47,11 @@ exports.CodeOutput = async(req,res)=>{
               response1 = await axios.request(options2);
               count--;
             }
+            console.log(response1);
             return res.json({
               success:true,
               message:'ho gya bhai',
-              data:{status:response1.data.status,output:response1.data.stdout},
+              data:response1.data,
             })
           } catch (error) {
               console.error(error);
