@@ -24,6 +24,7 @@
   "homepage": "https://github.com/Lovekush-1509/RTCCE#readme",
   "dependencies": {
     "concurrently": "^9.1.2",
+    "cookie-parser": "^1.4.7",
     "monaco-editor": "^0.52.2",
     "react-draggable": "^4.4.6",
     "react-resizable": "^3.0.5",
