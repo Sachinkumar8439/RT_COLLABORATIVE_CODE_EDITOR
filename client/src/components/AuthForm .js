@@ -34,7 +34,9 @@ export default function AuthForm() {
       if (result.success) {
         console.log("result", result);
         const data = {token :result.token,user:result.user}
-        localStorage.setItem('data',JSON.stringify(data))
+        // localStorage.setItem('data',JSON.stringify(data))
+        localStorage.setItem('token',result.token)
+        console.log(localStorage);
         localStorage.setItem('tempdata',JSON.stringify({email:result.user.Email,password:result.user.Password}));
 
         navigate(`/editor/${result.user._id}`, { state: result.user });
@@ -52,7 +54,8 @@ export default function AuthForm() {
     if (result.success) {
       console.log("result", result);
       localStorage.setItem('tempdata',JSON.stringify({email:result.user.Email,password:result.user.Password}));
-      console.log(localStorage);
+     
+
       navigate(`/editor/${result.user._id}`, { state: result.user });
       return;
     }
@@ -62,6 +65,7 @@ export default function AuthForm() {
 
 
   };
+
 
   useEffect(()=>{
     if(isauto)
