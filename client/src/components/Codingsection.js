@@ -1,18 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
-import programs from "../Controllers/program";
 import program from "../Controllers/program";
 import burgerimage from "../media/Images/menu-burger.png";
 import DropdownMenu from "./Dropdownmenu";
 import { StateContext } from "../Context/usecontext";
 import Editor from "@monaco-editor/react";
 import { monacoFormatLang, monaceThemes, editorOptions } from "../data";
-import ProgramForm from "./ProgramForm";
 
-const Codingsection = ({ socket ,user }) => {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-  const handleOpenPopup = () => setIsPopupOpen(true);
-  const handleClosePopup = () => setIsPopupOpen(false);
+const Codingsection = ({ socket }) => {
  
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
@@ -21,10 +15,7 @@ const Codingsection = ({ socket ,user }) => {
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 
   // main state variables
-  // const { setoutput ,input,setInput ,setisrunning } = useContext(StateContext);
-
-
-  const { setoutput ,input ,setisrunning } = useContext(StateContext);
+  const { setoutput ,input,setInput ,setisrunning } = useContext(StateContext);
   const [theme, settheme] = useState(localStorage.getItem("theme") || "vs");
   const [language, setlanguage] = useState();
   const [defaultCode, setdefaultCode] = useState(
@@ -41,7 +32,7 @@ const Codingsection = ({ socket ,user }) => {
       x: rect.left - 60,
       y: rect.bottom,
     });
-    setIsMenuVisible(!isMenuVisible);
+    setIsMenuVisible((prev) => !prev);
   };
 
   const handleMouseDown = (e) => {
@@ -65,47 +56,11 @@ const Codingsection = ({ socket ,user }) => {
 
   
 
-  // useEffect(() => {
-  //   if (isResizing) {
-  //     window.addEventListener("mousemove", handleMouseMove);
-  //     window.addEventListener("mouseup", handleMouseUp);
-  //   } else {
-  //     window.removeEventListener("mousemove", handleMouseMove);
-  //     window.removeEventListener("mouseup", handleMouseUp);
-  //   }
-
-  //   return () => {
-  //     window.removeEventListener("mousemove", handleMouseMove);
-  //     window.removeEventListener("mouseup", handleMouseUp);
-  //   };
-  // }, [isResizing]);
+  
 
   
 
   // main functions
-
-   const  handleSubmit = async(programname)=>{
-    console.log('submit button clicked',programname);
-    setIsPopupOpen(false);
-    if (programname) {
-      const filename = programname.split('.');
-      console.log('name ',filename[0],"extention ",filename[1],"length ",filename.length);
-      if(filename && filename.length === 2 )
-      {
-        const response = await  programs.saveProgram('/code-save',filename[0],filename[1]);
-        console.log(response);
-        
-
-        if(response.success)
-        {
-          console.log(response);
-  
-        }
-      }
-      return;
-
-      }
-}
   const handleselectchange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     if (selectedOption.text === language) return;
@@ -129,41 +84,19 @@ const Codingsection = ({ socket ,user }) => {
     };
   }, [socket]);
 
-  const fetchfiles = async () =>{
-    const result = await program.loadPrograms('/get-files');
-    console.log(result);
-    if(result.success)
-    {
-      console.log(result.data)
-
-    }
-
-
-
-  }
-
-  useEffect(()=>{
-    fetchfiles();
-
-
-  },[])
-
   return (
     <div
       className="resizable-container"
       style={{
-        // width: `${dimensions.width}%`,
-        width:'60%',
+        width: `${dimensions.width}%`,
       }}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
-            <ProgramForm isOpen={isPopupOpen} onClose={handleClosePopup} onSubmit={handleSubmit} />
-
       <div className="inner-navbar">
         <span>
-          <strong style={{ fontSize: "30px" }}>RTC</strong>
+          <strong style={{ fontSize: "30px" }}>RT</strong>
           <strong style={{ color: "tomato" }}>code_EDITOR</strong>
         </span>
         <ul className="inner-nav-list">
@@ -212,7 +145,6 @@ const Codingsection = ({ socket ,user }) => {
             <img src={burgerimage} alt="imag" width="25px" />
           </li>
           <DropdownMenu
-            handleOpenPopup={handleOpenPopup}
             isVisible={isMenuVisible}
             position={menuPosition}
             language={language}
@@ -220,27 +152,18 @@ const Codingsection = ({ socket ,user }) => {
           />
         </ul>
       </div>
-      <div 
-      // className="content content-area textarea"
-      style={{       
-        width:"100%",
-        height:"100%",
-        // height: "400px",
-        border: "1px solid black",
-        }}>
+      <div className="content content-area textarea">
         <Editor
-          // style={{
-          //   flex: "1",
-          // }}
-          value={content}
-          height="100%"
-            width="100%"
+          style={{
+            flex: "1",
+          }}
+          // value={content}
           onChange={(value) => {
             setcontent(value);
             socket.emit("send-updated-code", { value });
           }}
           options={editorOptions}
-          Value={content}
+          value={content}
           language={language}
           theme={theme}
           defaultLanguage={language}
@@ -267,15 +190,6 @@ const Codingsection = ({ socket ,user }) => {
       >
         run code
       </button>
-      
-      <button onClick={(e)=>{
-        e.preventDefault();
-        const LINK = `http://localhost:3000/edit/p/${user._id}/${user._id}`;
-        navigator.clipboard.writeText(LINK);
-        
-
-
-      }}>copy link</button>
       <div className="resizer" onMouseDown={handleMouseDown}></div>
     </div>
   );
