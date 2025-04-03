@@ -3,6 +3,7 @@ import programs from "../Controllers/program";
 
 const DropdownMenu = ({ isVisible, position, onClose,language,handleOpenPopup }) => {
   const menuRef = useRef();
+  console.log("handleOpenPopup function inside dropdown menu:",handleOpenPopup)
 
   useEffect(() => {
     const handleClickOutside = (event) => {

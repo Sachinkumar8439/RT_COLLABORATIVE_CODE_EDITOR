@@ -81,11 +81,12 @@ exports.LogIn = async(req,res) =>{
         }
 
         const token = jwt.sign(payload,"Lovekush_Sachin",{
-            expiresIn:"5hr"
+            expiresIn:"5h"
         });
         const user = {...isUserExist._doc,token:token};
         // user.token = token;
-        console.log(token)
+        // console.log("token:",token);
+        // console.log("user data inside login:",user);
         const options = {
             expires:new Date(Date.now()+3*24*60*60*1000),
             httpOnly:true,

@@ -1,15 +1,18 @@
 const Program = require("../Modes/Programmes");
+const User = require("../Modes/User");
 
 exports.saveCode = async (req, res) => {
   try {
     const { code = "", extension, id, fileName } = req.body;
+    const userId = req.user.id;
 
     console.log(
       "hello i am under saveCode-------------------------------------------",
       code,
       extension,
       id,
-      fileName
+      fileName,
+      userId,
     );
     const exist = await Program.findById(id);
     if (exist) {
@@ -32,6 +35,9 @@ exports.saveCode = async (req, res) => {
 
     const newFile = new Program({ code, extension, fileName });
     const saved = await newFile.save();
+    const pushedCode = await User.findByIdAndUpdate({_id:userId},{$push:{
+                                                                    Programmes : saved._id,
+                                                                    }},{new:true}).populate("Programmes");
     if (!saved) {
       return res.json({
         success: false,
@@ -41,6 +47,8 @@ exports.saveCode = async (req, res) => {
     return res.json({
       success: true,
       message: "File Saved Successfully",
+      file:saved,
+      user:pushedCode,
     });
   } catch (e) {
     return res.json({
@@ -54,7 +62,7 @@ exports.getFiles = async (req, res) => {
   try {
     const id = req.user.id;
     console.log("--------------------------------------------------------------------",id);
-    const allFiles = await Program.findById(id);
+    const allFiles = await User.findById(id).populate("Programmes");
     return res.json({
       success: true,
       message: "All Files Fetched Successfully",

@@ -19,9 +19,10 @@ const userSchema = new mongoose.Schema({
     },
 
 
-    Programmes:{
-        type:[Program],
-    },
+    Programmes:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Program",
+    }],
 
     PhoneNumber:{
         type:String,
