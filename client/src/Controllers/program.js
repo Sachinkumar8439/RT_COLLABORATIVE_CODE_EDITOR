@@ -2,13 +2,20 @@ import apiRequest from "../API/api";
 
 const BASE_URL = "http://localhost:4000/rtcce/version-1.0";
 
-const saveProgram = async (route, fileName = null , extension = null ,id=null) => {
-  if (!route || !fileName) {
+const saveProgram = async (
+  route,
+  token,
+  fileName = null,
+  extension = null,
+  id = null
+) => {
+  if (!route || !fileName || !token) {
     throw new Error("All parameters (userKey, name) are required.");
   }
-  console.log(fileName , extension,id)
+  console.log(fileName, extension, id);
   try {
     const response = await apiRequest("post", `${BASE_URL}${route}`, {
+      token,
       fileName,
       extension,
     });
@@ -56,13 +63,16 @@ const deleteProgram = async (route, userKey, programkey) => {
 //   }
 // };
 
-const loadPrograms = async (route) => {
+const loadPrograms = async (route, token) => {
   if (!route) {
     throw new Error("All parameters (userKey,) are required.");
   }
+  console.log("token arha hai", token);
 
   try {
-    const response = await apiRequest("get", `${BASE_URL}${route}`);
+    const response = await apiRequest("post", `${BASE_URL}${route}`, {
+      token: token,
+    });
     return response;
   } catch (error) {
     console.error("Error in saveProgram:", error.message);
@@ -70,12 +80,12 @@ const loadPrograms = async (route) => {
   }
 };
 
-const getoutput = async (route, program, langCode,userStdin) => {
+const getoutput = async (route, program, langCode, userStdin) => {
   if (!route || !program || !langCode) {
     throw new Error("All parameters (userKey,) are required.");
   }
 
-    // alert("userStdnin:",userStdin);
+  // alert("userStdnin:",userStdin);
 
   try {
     const response = await apiRequest("post", `${BASE_URL}${route}`, {

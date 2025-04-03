@@ -26,7 +26,7 @@ router.get('/get-languages',getLanguages);
 
 
 router.post('/code-save',auth,saveCode);
-router.get('/get-files',auth,getFiles);
+router.post('/get-files',auth,getFiles);
 router.delete('/delete-file',deleteFile);
 
 
