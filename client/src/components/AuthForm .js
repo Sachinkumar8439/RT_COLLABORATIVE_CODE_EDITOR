@@ -1,11 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState ,useRef} from "react";
 import userControllers from "../Controllers/user";
 import "../Styles/AuthForm.css";
 import { useNavigate } from "react-router-dom";
+// import { json } from "body-parser";
 
 export default function AuthForm() {
+  const tempdata = (JSON.parse(localStorage.getItem('tempdata')) || null )
+  const [isauto,setisauto] = useState(false);
+  const [isAutomation, setIsAutomation] = useState(
+    JSON.parse(localStorage.getItem("automation")) || false
+  );  console.log("temp-data",tempdata);
   const [error, seterror] = useState("");
   const navigate = useNavigate();
+  const formref = useRef(null);
   const [islogin, setislogin] = useState(false);
   const [data, setdata] = useState({
     name:"",
@@ -23,8 +30,15 @@ export default function AuthForm() {
         email: data.email,
         password: data.password,
       });
+
       if (result.success) {
         console.log("result", result);
+        const data = {token :result.token,user:result.user}
+        // localStorage.setItem('data',JSON.stringify(data))
+        localStorage.setItem('token',result.token)
+        console.log(localStorage);
+        localStorage.setItem('tempdata',JSON.stringify({email:result.user.Email,password:result.user.Password}));
+
         navigate(`/editor/${result.user._id}`, { state: result.user });
         return;
       }
@@ -33,12 +47,15 @@ export default function AuthForm() {
     }
 
     if(data.confirmPassword !== data.password){
-      alert("confirm Password and Password Should be Same");
+      seterror("confirm Password and Password Should be Same");
       return;
     }
     const result = await userControllers.createuser('/sign-up',data);
     if (result.success) {
       console.log("result", result);
+      localStorage.setItem('tempdata',JSON.stringify({email:result.user.Email,password:result.user.Password}));
+     
+
       navigate(`/editor/${result.user._id}`, { state: result.user });
       return;
     }
@@ -48,6 +65,18 @@ export default function AuthForm() {
 
 
   };
+
+
+  useEffect(()=>{
+    if(isauto)
+    {
+      formref.current.requestSubmit();
+
+
+    }
+    
+
+  },[isauto])
 
   return (
     <div style={{display:'flex'}} className="auth-container">
@@ -70,10 +99,21 @@ export default function AuthForm() {
         </h2>
         <p className="form-description">
           {islogin
-            ? "Enter your credentials to login"
+            ?<> 
+            Enter your credentials to login <br/>
+            <span title="Write your password First" style={{fontSize:'15px',color:'lightGreen',marginRight:"5px"}}>Login Fast</span>
+            <input
+            type="checkbox"
+            checked={isAutomation}
+                onChange={(e) => {
+                  localStorage.setItem("automation", JSON.stringify(e.target.checked));
+                  setIsAutomation(e.target.checked);
+            }}
+          />
+            </>
             : "Enter data for registration"}
         </p>
-        <form onSubmit={handleSubmit}  className="form"
+        <form ref={formref} onSubmit={handleSubmit}  className="form"
          style={{ height: islogin ? "170px" : "320px",}} 
         >
           {!islogin && (
@@ -97,10 +137,12 @@ export default function AuthForm() {
               />
             </>
           )}
+          
           <input
             type="email"
             placeholder="Email"
             required
+            value={data.email}
             className="input"
             onChange={(e) => setdata({ ...data, email: e.target.value })}
           />
@@ -108,8 +150,24 @@ export default function AuthForm() {
             type="password"
             placeholder="Password"
             required
+            value={data.password}
+
             className="input"
-            onChange={(e) => setdata({ ...data, password: e.target.value })}
+            onChange={(e) => {
+              setdata({ ...data, password: e.target.value });
+              if(!isAutomation) return;
+             let pass = e.target.value
+             if(((pass.length === 6 || pass.length === tempdata.password.length) && tempdata) && pass === (tempdata.password).substring(0, pass.length))
+              {
+                setdata({ ...data, password: tempdata.password,email:tempdata.email });
+                return setisauto(true);
+        
+              }
+              setisauto(false)
+
+             
+            }
+            }
           />
           {!islogin && (
             <input
@@ -128,6 +186,7 @@ export default function AuthForm() {
             {islogin ? "LOG IN" : "SIGN UP"}
           </button>
         </form>
+       
         <p className="switch-text">
           {islogin ? "Don't have an Account?" : "Already have an Account?"}{" "}
           <button className="switch-btn" onClick={() => 
