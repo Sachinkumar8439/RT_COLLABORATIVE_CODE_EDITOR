@@ -88,18 +88,13 @@ const Codingsection = ({ socket ,user }) => {
     console.log('submit button clicked',programname);
     setIsPopupOpen(false);
     if (programname) {
-      const extention = programname.split('.');
-      console.log('name ',extention[0],"extention ",extention[1],"length ",extention.length);
-      if(extention && extention.length === 2 )
+      const filename = programname.split('.');
+      console.log('name ',filename[0],"extention ",filename[1],"length ",filename.length);
+      if(filename && filename.length === 2 )
       {
-        const response = programs.createProgram(
-          "/code-save",
-
-          //  yaha user ka unique key aaega ya fir id hi ye abhi string hai taki eror na aae
-          null,
-          programname,
-          language,
-        );
+        const response = await  programs.saveProgram('/code-save',filename[0],filename[1]);
+        console.log(response);
+        
 
         if(response.success)
         {
@@ -135,9 +130,11 @@ const Codingsection = ({ socket ,user }) => {
   }, [socket]);
 
   const fetchfiles = async () =>{
-    const result = await program.loadPrograms('/get-files',user._id);
+    const result = await program.loadPrograms('/get-files');
+    console.log(result);
     if(result.success)
     {
+      console.log(result.data)
 
     }
 
@@ -146,7 +143,7 @@ const Codingsection = ({ socket ,user }) => {
   }
 
   useEffect(()=>{
-    // fetchfiles();
+    fetchfiles();
 
 
   },[])
@@ -155,7 +152,8 @@ const Codingsection = ({ socket ,user }) => {
     <div
       className="resizable-container"
       style={{
-        width: `${dimensions.width}%`,
+        // width: `${dimensions.width}%`,
+        width:'60%',
       }}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}

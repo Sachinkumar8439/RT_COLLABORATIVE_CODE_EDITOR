@@ -2,14 +2,13 @@ import apiRequest from "../API/api";
 
 const BASE_URL = "http://localhost:4000/rtcce/version-1.0";
 
-const createProgram = async (route, userId, fileName, extension) => {
+const saveProgram = async (route, fileName = null , extension = null ,id=null) => {
   if (!route || !fileName) {
     throw new Error("All parameters (userKey, name) are required.");
   }
-
+  console.log(fileName , extension,id)
   try {
     const response = await apiRequest("post", `${BASE_URL}${route}`, {
-      userId,
       fileName,
       extension,
     });
@@ -37,36 +36,33 @@ const deleteProgram = async (route, userKey, programkey) => {
   }
 };
 
-const saveProgram = async (route, userKey, programkey, updatingdata) => {
-  if (!route || !userKey || !programkey || !updatingdata) {
-    throw new Error(
-      "All parameters (userKey,programkey, updatingdata) are required."
-    );
-  }
+// const saveProgram = async (route, userKey, programkey, updatingdata) => {
+//   if (!route || !userKey || !programkey || !updatingdata) {
+//     throw new Error(
+//       "All parameters (userKey,programkey, updatingdata) are required."
+//     );
+//   }
 
-  try {
-    const response = await apiRequest("post", `${BASE_URL}${route}`, {
-      userKey,
-      programkey,
-      updatingdata,
-    });
-    return response;
-  } catch (error) {
-    console.error("Error in saveProgram:", error.message);
-    throw error;
-  }
-};
+//   try {
+//     const response = await apiRequest("post", `${BASE_URL}${route}`, {
+//       userKey,
+//       programkey,
+//       updatingdata,
+//     });
+//     return response;
+//   } catch (error) {
+//     console.error("Error in saveProgram:", error.message);
+//     throw error;
+//   }
+// };
 
-const loadPrograms = async (route, userKey, programkey = null) => {
-  if (!route || !userKey) {
+const loadPrograms = async (route) => {
+  if (!route) {
     throw new Error("All parameters (userKey,) are required.");
   }
 
   try {
-    const response = await apiRequest("post", `${BASE_URL}${route}`, {
-      userKey,
-      programkey,
-    });
+    const response = await apiRequest("get", `${BASE_URL}${route}`);
     return response;
   } catch (error) {
     console.error("Error in saveProgram:", error.message);
@@ -114,7 +110,7 @@ const getlanguages = async (route) => {
 };
 
 const programControllers = {
-  createProgram,
+  // createProgram,
   deleteProgram,
   saveProgram,
   loadPrograms,
