@@ -5,8 +5,14 @@ import DropdownMenu from "./Dropdownmenu";
 import { StateContext } from "../Context/usecontext";
 import Editor from "@monaco-editor/react";
 import { monacoFormatLang, monaceThemes, editorOptions } from "../data";
+import ProgramForm from "./ProgramForm";
 
 const Codingsection = ({ socket }) => {
+  
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const handleOpenPopup = () => setIsPopupOpen(true);
+  const handleClosePopup = () => setIsPopupOpen(false);
  
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
@@ -57,7 +63,28 @@ const Codingsection = ({ socket }) => {
   
 
   
+  const  handleSubmit = async(programname)=>{
+    console.log('submit button clicked',programname);
+    setIsPopupOpen(false);
+    if (programname) {
+      const filename = programname.split('.');
+      console.log('name ',filename[0],"extention ",filename[1],"length ",filename.length);
+      if(filename && filename.length === 2 )
+      {
+        const response = await  program.saveProgram('/code-save',filename[0],filename[1]);
+        console.log(response);
+        
 
+        if(response.success)
+        {
+          console.log(response);
+  
+        }
+      }
+      return;
+
+      }
+    }
   
 
   // main functions
@@ -94,6 +121,7 @@ const Codingsection = ({ socket }) => {
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
+      <ProgramForm isOpen={isPopupOpen} onClose={handleClosePopup} onSubmit={handleSubmit} />
       <div className="inner-navbar">
         <span>
           <strong style={{ fontSize: "30px" }}>RT</strong>
@@ -145,6 +173,7 @@ const Codingsection = ({ socket }) => {
             <img src={burgerimage} alt="imag" width="25px" />
           </li>
           <DropdownMenu
+            handleOpenPopup={handleOpenPopup}
             isVisible={isMenuVisible}
             position={menuPosition}
             language={language}
