@@ -91,7 +91,6 @@ exports.LogIn = async(req,res) =>{
             expires:new Date(Date.now()+3*24*60*60*1000),
             httpOnly:true,
         }
-        console.log("cookie inside login:",res.cookie("token",token,options));
         return res.cookie("token",token,options).json({
             success:true,
             message:"Logged In Successfully",
