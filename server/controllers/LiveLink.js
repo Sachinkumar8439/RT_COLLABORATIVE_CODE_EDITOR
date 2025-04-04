@@ -5,7 +5,7 @@ exports.LinkGenerate = async(req,res) =>{
     try{
         const userId = req.user.id;
         const {programId} = req.body; // path to that route
-        const link = `http://localhost:3000/user-id:${userId}-/program-id:${programId}`;
+        const link = `http://localhost:3000/edit/p/${userId}/${programId}`;
 
         const liveLinkPassword = crypto.randomBytes(16).toString("hex");
         const liveLinkExpiredAt = new Date(Date.now()+1000*60*60*5);

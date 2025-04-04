@@ -5,13 +5,14 @@ const BASE_URL = "http://localhost:4000/rtcce/version-1.0";
 const saveProgram = async (
   route,
   token,
-  fileName = "",
-  extension = "",
-  id,
+  fileName, 
+  extension,
+  code,
+  id ,
 ) => {
-  console.log(id);
-  if (!route || !fileName || !token) {
-    throw new Error("All parameters (userKey, name) are required.");
+  console.log("code is ",code," id ",id,token)
+  if (!route || !token ) {
+    throw new Error("All parameters are required.",token,code);
   }
   console.log(fileName, extension, id);
   try {
@@ -19,6 +20,8 @@ const saveProgram = async (
       token,
       fileName,
       extension,
+      code,
+      id,
     });
     return response;
   } catch (error) {
@@ -82,7 +85,8 @@ const loadPrograms = async (route, token) => {
 };
 
 const getoutput = async (route, program, langCode, userStdin) => {
-  if (!route || !program || !langCode) {
+  console.log("program",program,langCode,userStdin)
+  if (!route || !program ) {
     throw new Error("All parameters (userKey,) are required.");
   }
 

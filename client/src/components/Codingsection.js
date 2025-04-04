@@ -80,9 +80,9 @@ const Codingsection = ({ socket, user }) => {
         "/code-save",
         token,
         fileData.fileName,
-        fileData.extension,
+        fileData.extention,
         value,
-        fileData._id
+        fileData._id,
       );
       console.log("Text saving:", response);
 
@@ -287,6 +287,7 @@ const Codingsection = ({ socket, user }) => {
             return;
           }
           setisrunning(true);
+          console.log("lancode",langCode,"content",content)
           // setInput(inputSimp)
           const response = await program.getoutput(
             "/output",

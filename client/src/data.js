@@ -144,7 +144,8 @@ export const monacoFormatLang = [
     name: "java",
     defaultCode: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}',
     extension: "java",
-    iconUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java-original.svg", 
+    iconUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
+
   },
   { id: 63, name: "javascript", extension: "js", iconUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg", defaultCode: "console.log('Hello, World!');" },
   { id: 78, name: "kotlin", extension: "kt", iconUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg", defaultCode: 'fun main() {\n    println("Hello, World!")\n}' },

@@ -8,7 +8,7 @@ const Outputsection = ({ data }) => {
   console.log("data", data.output);
   return (
     <div className="outputsection-container">
-      <div className="output-content content-area">
+      <div style={{overflowY:'scroll'}} className="output-content content-area">
         {!isrunning ? (
           <p
             style={{

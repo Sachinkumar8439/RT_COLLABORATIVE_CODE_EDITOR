@@ -46,6 +46,8 @@
 }
 .input-output-container {
   position: relative;
+  min-height: 50%;
+  max-height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -77,7 +79,7 @@
   display: flex;
   justify-content: space-between;
   padding: 0px 20px;
-  background-color: #f4f5f5;
+  background-color: #ffffff;
 }
 .inner-nav-list {
   list-style: none;
