@@ -6,6 +6,7 @@ app.use(express.json());
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
+app.use(express.json());
 // CORS options to allow requests from frontend running on port 5500
 const corsOptions = {
   origin: "http://localhost:3000", // Allow only requests from this origin

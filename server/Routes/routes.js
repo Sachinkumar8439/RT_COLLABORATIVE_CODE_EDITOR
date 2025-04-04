@@ -9,7 +9,8 @@ const {
 const {
     saveCode,
     getFiles,
-    deleteFile
+    deleteFile,
+    getProgram,
 } = require("../controllers/databaseSaving");
 
 const {
@@ -21,6 +22,11 @@ const {
     auth,
 } = require("../middlewares/Auth");
 
+const {
+    LinkGenerate,
+    TerminateLiveLink,
+} = require("../controllers/LiveLink");
+
 router.post('/output',CodeOutput);
 router.get('/get-languages',getLanguages);
 
@@ -28,10 +34,14 @@ router.get('/get-languages',getLanguages);
 router.post('/code-save',auth,saveCode);
 router.post('/get-files',auth,getFiles);
 router.delete('/delete-file',deleteFile);
+router.get('/get-program',getProgram,);
 
 
 router.post('/sign-up',SignUp);
 router.post('/log-in',LogIn);
+
+router.post('/live-editor',auth,LinkGenerate);
+router.post('/terminate-live-link',auth,TerminateLiveLink);
 
 
 module.exports = router;

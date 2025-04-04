@@ -17,6 +17,21 @@ const programmeSchema = new mongoose.Schema({
     default: "",
   },
 
+  link:{
+    type:String,
+    default:""
+  },
+
+  liveLinkExpiredAt:{
+    type:Date,
+    default:null,
+  },
+
+  liveLinkPassword:{
+    type:String,
+    default:"",
+  },
+
   userEnrolled: [
     {
       type: mongoose.Schema.Types.ObjectId,

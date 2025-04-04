@@ -92,8 +92,25 @@ exports.deleteFile = async (req, res) => {
   }
 };
 
-// exports.createFile = async() =>{
-//     const {fileName,extension} = req.body;
-//     const code = "";
-//     const newFile = new Program
-// }
+exports.getProgram = async(req,res) =>{
+    try{
+      const {programId} = req.body;
+      const programData = await Program.findById(programId);
+      if(!programData){
+        return res.json({
+          success:false,
+          message:"Program Not Found",
+        });
+      }
+      return res.json({
+        success:true,
+        message:"Program Found",
+        data:programData,
+      });
+    }catch(e){
+      return res.json({
+        success:false,
+        message:e.message,
+      });
+    }
+}
