@@ -11,6 +11,7 @@ const Maineditor = () => {
   const location = useLocation();
   const [user, setuser] = useState(location.state);
   const { output, setoutput } = useContext(StateContext);
+  
   const socket = useSocket();
 
   useEffect(() => {

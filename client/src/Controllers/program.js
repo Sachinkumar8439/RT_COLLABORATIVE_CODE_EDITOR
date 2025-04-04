@@ -5,19 +5,22 @@ const BASE_URL = "http://localhost:4000/rtcce/version-1.0";
 const saveProgram = async (
   route,
   token,
-  fileName = null,
-  extension = null,
-  id = null
+  fileName, 
+  extension,
+  value,
+  id ,
 ) => {
-  if (!route || !fileName || !token) {
-    throw new Error("All parameters (userKey, name) are required.");
+  console.log("code is ",value," id ",id,token)
+  if (!route || !token ) {
+    throw new Error("All parameters are required.",token,value);
   }
-  console.log(fileName, extension, id);
+  // console.log(fileName, extension, id);
   try {
     const response = await apiRequest("post", `${BASE_URL}${route}`, {
       token,
       fileName,
       extension,
+      value,
     });
     return response;
   } catch (error) {

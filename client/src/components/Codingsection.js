@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import program from "../Controllers/program";
 import burgerimage from "../media/Images/menu-burger.png";
 import DropdownMenu from "./Dropdownmenu";
@@ -7,13 +7,13 @@ import Editor from "@monaco-editor/react";
 import { monacoFormatLang, monaceThemes, editorOptions } from "../data";
 import ProgramForm from "./ProgramForm";
 
-const Codingsection = ({ socket ,user }) => {
-  const token = localStorage.getItem('token');
+const Codingsection = ({ socket, user }) => {
+  const [token, settoken] = useState(localStorage.getItem("token"));
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleOpenPopup = () => setIsPopupOpen(true);
   const handleClosePopup = () => setIsPopupOpen(false);
- 
+
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [dimensions, setDimensions] = useState({ width: 60, height: 100 });
@@ -21,16 +21,22 @@ const Codingsection = ({ socket ,user }) => {
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 
   // main state variables
-  const { setoutput ,input,setInput ,setisrunning } = useContext(StateContext);
+  const { setoutput, input, setInput, setisrunning } = useContext(StateContext);
+
   const [theme, settheme] = useState(localStorage.getItem("theme") || "vs");
-  const [language, setlanguage] = useState();
+  const [language, setlanguage] = useState(localStorage.getItem('language') || '');
   const [defaultCode, setdefaultCode] = useState(
     monacoFormatLang[0].defaultCode
   );
 
   const [languages, setlanguages] = useState(monacoFormatLang);
-  const [content, setcontent] = useState("");
-  const [langCode,setLangCode] = useState(0);
+  const [files, setfiles] = useState(null);
+  const [content, setcontent] = useState(
+    ''
+  );
+  const [currentfile, setcurrentfile] = useState(JSON.parse(localStorage.getItem('lastfile')) || null );
+  const fileref = useRef(null);
+  const [langCode, setLangCode] = useState(0);
 
   const handleBurgerClick = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -60,44 +66,80 @@ const Codingsection = ({ socket ,user }) => {
     setIsResizing(false);
   };
 
-  
+  const handlewriting = async (value) => {
+    console.log("fileref", fileref.current, "token", token, "value", value);
+    if (value && token &&  currentfile) {
+      const fileData = currentfile;
+      setfiles((prev) =>
+        prev.map((f) => (f._id === fileData._id ? { ...f, code: value } : f))
+      );
 
-  
-  const  handleSubmit = async(programname)=>{
-    console.log('submit button clicked',programname);
+      setcontent(value);
+      localStorage.setItem("lastcode", value);
+      const response = await program.saveProgram(
+        "/code-save",
+        token,
+        null,
+        null,
+        value,
+        fileData._id
+      );
+      console.log("Text saving:", response);
+
+      return;
+    }
+  };
+
+  const handleSubmit = async (programname) => {
+    console.log("submit button clicked", programname);
     setIsPopupOpen(false);
     if (programname) {
-      const filename = programname.split('.');
-      console.log('name ',filename[0],"extention ",filename[1],"length ",filename.length);
-      if(filename && filename.length === 2 )
-      {
-        const response = await  program.saveProgram('/code-save',token,filename[0],filename[1]);
+      const filename = programname.split(".");
+      console.log(
+        "name ",
+        filename[0],
+        "extention ",
+        filename[1],
+        "length ",
+        filename.length,
+        "token",
+        token
+      );
+      if (filename && filename.length === 2 && token) {
+        const response = await program.saveProgram(
+          "/code-save",
+          token,
+          filename[0],
+          filename[1],
+          "",
+          null
+        );
         console.log(response);
-        
 
-        if(response.success)
-        {
-          console.log("success hai bhai ",response);
-  
+        if (response.success) {
+          console.log("success hai bhai ", response);
+          setcurrentfile(response.file);
+          setfiles((pre) => [response.file, ...pre]);
         }
       }
       return;
-
-      }
     }
-  
+  };
 
   // main functions
   const handleselectchange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     if (selectedOption.text === language) return;
-    const selectedLang = monacoFormatLang.find(lang => lang.name === e.target.value);
-    setcontent(selectedLang.defaultCode);
+    const selectedLang = monacoFormatLang.find(
+      (lang) => lang.name === e.target.value
+    );
     setlanguage(selectedOption.text);
     setdefaultCode(selectedOption.getAttribute("data-defaultcode"));
+    localStorage.setItem('language',selectedOption.text)
     setLangCode(selectedOption.getAttribute("data-lang_code"));
+    if (!content) setcontent(selectedLang.defaultCode);
     // if(content === ""){
-      // }
+    // }
   };
 
   useEffect(() => {
@@ -111,24 +153,33 @@ const Codingsection = ({ socket ,user }) => {
     };
   }, [socket]);
 
-  const fetchfiles = async () =>{
-    const result = await program.loadPrograms('/get-files',token);
-    console.log(result);
-    if(result.success)
-    {
-      console.log(result.data)
-
+  const fetchfiles = async () => {
+    const result = await program.loadPrograms("/get-files", token);
+    console.log("file fecthing result", result);
+    if (result.success) {
+      console.log("result data ", result.data);
+      if (result.data) {
+        setfiles(result.data.Programmes);
+        handlewriting(currentfile.code)
+      }
     }
+  };
 
+  useEffect(() => {
+    if (currentfile) {
+      setcontent(currentfile.code);
+    }
+  }, [currentfile]);
 
-
-  }
-
-  useEffect(()=>{
+  useEffect(() => {
     fetchfiles();
+    console.log("localstorage", localStorage);
+    setcontent(localStorage.getItem("lastcode"));
 
-
-  },[])
+    return () => {
+      localStorage.setItem("lastcode", content);
+    };
+  }, []);
 
   return (
     <div
@@ -140,7 +191,11 @@ const Codingsection = ({ socket ,user }) => {
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
-      <ProgramForm isOpen={isPopupOpen} onClose={handleClosePopup} onSubmit={handleSubmit} />
+      <ProgramForm
+        isOpen={isPopupOpen}
+        onClose={handleClosePopup}
+        onSubmit={handleSubmit}
+      />
       <div className="inner-navbar">
         <span>
           <strong style={{ fontSize: "30px" }}>RT</strong>
@@ -166,7 +221,7 @@ const Codingsection = ({ socket ,user }) => {
                   key={index}
                   value={val.name}
                   data-defaultcode={val.defaultCode}
-                  data-lang_code = {val.id}
+                  data-lang_code={val.id}
                 >
                   {val.name}
                 </option>
@@ -192,11 +247,16 @@ const Codingsection = ({ socket ,user }) => {
             <img src={burgerimage} alt="imag" width="25px" />
           </li>
           <DropdownMenu
+            fileref={fileref}
+            currentfile={currentfile}
+            setcurrentfile={setcurrentfile}
+            files={files}
             handleOpenPopup={handleOpenPopup}
             isVisible={isMenuVisible}
             position={menuPosition}
             language={language}
             onClose={() => setIsMenuVisible(false)}
+            setcontent={setcontent}
           />
         </ul>
       </div>
@@ -207,7 +267,8 @@ const Codingsection = ({ socket ,user }) => {
           }}
           // value={content}
           onChange={(value) => {
-            setcontent(value);
+            // setcontent(value);
+            handlewriting(value);
             socket.emit("send-updated-code", { value });
           }}
           options={editorOptions}
@@ -227,13 +288,19 @@ const Codingsection = ({ socket ,user }) => {
           }
           setisrunning(true);
           // setInput(inputSimp)
-          const response = await program.getoutput("/output", content, langCode,input);
-          // if (response.success) {
-            console.log("output Response:",response.data);
+          const response = await program.getoutput(
+            "/output",
+            content,
+            langCode,
+            input
+          );
+          if (response.success) {
+            console.log("output Response:", response.data);
             setoutput(response.data);
             setisrunning(false);
-
-          // }
+            return;
+          }
+          setisrunning(false);
         }}
       >
         run code
