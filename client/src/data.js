@@ -156,7 +156,7 @@ export const monacoFormatLang = [
   { id: 85, name: "perl", extension: "pl", iconUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/perl/perl-original.svg", defaultCode: 'print "Hello, World!\\n";' },
   { id: 68, name: "php", extension: "php", iconUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg", defaultCode: "<?php\necho 'Hello, World!';\n?>" },
   { id: 69, name: "prolog", extension: "pl", iconUrl: "https://upload.wikimedia.org/wikipedia/commons/4/4a/Prolog_logo.svg", defaultCode: ":- initialization(main).\nmain :- write('Hello, World!'), nl." },
-  { id: 70, name: "python", extension: "py", iconUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", defaultCode: 'print("Hello, World!")' },
+  { id: 70, name: "python", extension: "python", iconUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg", defaultCode: 'print("Hello, World!")' },
   { id: 80, name: "r", extension: "r", iconUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/r/r-original.svg", defaultCode: 'cat("Hello, World!\\n")' },
   { id: 72, name: "ruby", extension: "rb", iconUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-original.svg", defaultCode: "puts 'Hello, World!'" },
   { id: 73, name: "rust", extension: "rs", iconUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg", defaultCode: 'fn main() {\n    println!("Hello, World!");\n}' },

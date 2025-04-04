@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {useNavigate} from "react-router-dom";
 import projectlogo from "../media/Images/project_logo.webp";
 import "../Styles/Hero.css";
+import { StateContext } from "../Context/usecontext";
 const Hero = () => {
-  const token = localStorage.getItem('token') || null;
+  const [token,setToken] = useState(localStorage.getItem('token'));
+  const {isTokenValid} = useContext(StateContext);
+
+  useEffect(() =>{
+    if(!isTokenValid(token)){
+      localStorage.removeItem('token');
+      setToken(null);
+    }
+  },[token]);
 
   const naviagte = useNavigate();
   return (

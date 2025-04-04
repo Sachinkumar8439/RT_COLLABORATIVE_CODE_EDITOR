@@ -79,8 +79,8 @@ const Codingsection = ({ socket, user }) => {
       const response = await program.saveProgram(
         "/code-save",
         token,
-        null,
-        null,
+        fileData.fileName,
+        fileData.extension,
         value,
         fileData._id
       );
@@ -155,12 +155,12 @@ const Codingsection = ({ socket, user }) => {
 
   const fetchfiles = async () => {
     const result = await program.loadPrograms("/get-files", token);
-    console.log("file fecthing result", result);
+    console.log("file fecthing result", result,"token:",token);
     if (result.success) {
       console.log("result data ", result.data);
       if (result.data) {
         setfiles(result.data.Programmes);
-        handlewriting(currentfile.code)
+        handlewriting(currentfile.code);
       }
     }
   };

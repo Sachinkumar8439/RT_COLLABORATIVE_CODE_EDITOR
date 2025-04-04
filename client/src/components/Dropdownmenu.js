@@ -4,6 +4,8 @@ import { monacoFormatLang } from "../data";
 
 const DropdownMenu = ({ isVisible, position, onClose,language,handleOpenPopup,files,currentfile,setcurrentfile,fileref}) => {
   const menuRef = useRef();
+
+  // console.log(isVisible, position, onClose,language,handleOpenPopup,files,currentfile,setcurrentfile,fileref);
  
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -66,6 +68,7 @@ const DropdownMenu = ({ isVisible, position, onClose,language,handleOpenPopup,fi
       </li>
       {files && files.map((file, index) => {
         const match = monacoFormatLang.find(v => v.extension === file.extension);
+        console.log("monacoFormatLang:",monacoFormatLang,":match:",match,":files:",files);
         const filematch = file._id === (currentfile && currentfile._id);
       return (
         <li
@@ -82,6 +85,7 @@ const DropdownMenu = ({ isVisible, position, onClose,language,handleOpenPopup,fi
           color:filematch ? "white":'',
           background:filematch?'rgb(7, 61, 87)':"",
         }}
+
         onClick={(e) => {
           e.preventDefault();
           fileref.current = e.currentTarget; 
@@ -95,7 +99,6 @@ const DropdownMenu = ({ isVisible, position, onClose,language,handleOpenPopup,fi
         }}
       >
         <div style={{display:'flex',gap:'10px'}}>
-
         <img src={match.iconUrl} width='20px' alt=''/>
        <p>
         {`${file.fileName}.${file.extension}`}
