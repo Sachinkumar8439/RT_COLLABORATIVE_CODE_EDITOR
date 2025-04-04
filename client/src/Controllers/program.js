@@ -7,12 +7,12 @@ const saveProgram = async (
   token,
   fileName, 
   extension,
-  value,
+  code,
   id ,
 ) => {
-  console.log("code is ",value," id ",id,token)
+  console.log("code is ",code," id ",id,token)
   if (!route || !token ) {
-    throw new Error("All parameters are required.",token,value);
+    throw new Error("All parameters are required.",token,code);
   }
   // console.log(fileName, extension, id);
   try {
@@ -20,7 +20,8 @@ const saveProgram = async (
       token,
       fileName,
       extension,
-      value,
+      code,
+      id,
     });
     return response;
   } catch (error) {
@@ -84,7 +85,8 @@ const loadPrograms = async (route, token) => {
 };
 
 const getoutput = async (route, program, langCode, userStdin) => {
-  if (!route || !program || !langCode) {
+  console.log("program",program,langCode,userStdin)
+  if (!route || !program ) {
     throw new Error("All parameters (userKey,) are required.");
   }
 
