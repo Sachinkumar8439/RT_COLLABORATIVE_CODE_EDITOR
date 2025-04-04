@@ -124,6 +124,39 @@ const getlanguages = async (route) => {
   }
 };
 
+const getlink = async (route, programId) => {
+  if (!route || !programId) {
+    throw new Error("All parameters (userKey, programkey) are required.");
+  }
+
+  try {
+    const response = await apiRequest("post", `${BASE_URL}${route}`, {
+      programId,
+     
+    });
+    return response;
+  } catch (error) {
+    console.error("Error in getlink:", error.message);
+    throw error;
+  }
+};
+
+const terminatelink = async (route, programId) => {
+  if (!route || !programId ) {
+    throw new Error("All parameters (route, programid) are required.");
+  }
+
+  try {
+    const response = await apiRequest("post", `${BASE_URL}${route}`, {
+      programId
+  });
+    return response;
+  } catch (error) {
+    console.error("Error in getlink:", error.message);
+    throw error;
+  }
+};
+
 const programControllers = {
   // createProgram,
   deleteProgram,
@@ -131,6 +164,8 @@ const programControllers = {
   loadPrograms,
   getoutput,
   getlanguages,
+  terminatelink,
+  getlink,
 };
 
 export default programControllers;

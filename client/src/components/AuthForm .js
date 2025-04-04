@@ -54,9 +54,8 @@ export default function AuthForm() {
     if (result.success) {
       console.log("result", result);
       localStorage.setItem('tempdata',JSON.stringify({email:result.user.Email,password:result.user.Password}));
-     
-
-      navigate(`/editor/${result.user._id}`, { state: result.user });
+     alert('sign up successfully please go to login')
+      // navigate(`/editor/${result.user._id}`, { state: result.user });
       return;
     }
     seterror(result.message);
