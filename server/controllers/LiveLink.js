@@ -95,13 +95,13 @@ exports.validateMember = async(req,res) =>{
         const UserName = bodyContent.username;
         const {programId} = bodyContent;
         const password = bodyContent.code;
-        const userExist = await User.findOne({UserName});
-        if(!userExist){
-            return res.json({
-                success:false,
-                message:"No user exist with this user name",
-            });
-        }
+        // const userExist = await User.findOne({UserName});
+        // if(!userExist){
+        //     return res.json({
+        //         success:false,
+        //         message:"No user exist with this user name",
+        //     });
+        // }
 
         const programData = await Program.findById(programId);
         if(!programData){
