@@ -84,7 +84,7 @@ const InputBox = ({ heading, value }) => {
   );
 };
 
-const Authbox = ({ userid, programid, setisValid }) => {
+const Authbox = ({ userid, programid, setisValid, setcontent }) => {
   const [error, seterror] = useState("");
   const [data, setdata] = useState({
     userName: "",
@@ -96,17 +96,24 @@ const Authbox = ({ userid, programid, setisValid }) => {
   const handlesubmit = async (e) => {
     e.preventDefault();
     console.log(data);
-    const response = await program.verifymemeber('/member-validate',data.programId,data.Code,data.userName);
-    console.log(response)
-    if(response.success)
-      {
-        setisValid(true);
-       const validationdata =  JSON.parse(localStorage.getItem(programid));
-       validationdata.isValid = true;
-       localStorage.setItem(programid,JSON.stringify(validationdata))
-        return;
-      }    
-      seterror(response.message);
+    const response = await program.verifymemeber(
+      "/member-validate",
+      data.programId,
+      data.Code,
+      data.userName
+    );
+    console.log(response);
+    if (response.success) {
+      setisValid(true);
+      setcontent(response.data.code);
+      const existingData = JSON.parse(sessionStorage.getItem(programid)) || {};
+      existingData.isValid = true;
+      existingData.content = response.data.code;
+      sessionStorage.setItem(programid, JSON.stringify(existingData));
+      console.log("localstorage",localStorage)
+      return;
+    }
+    seterror(response.message);
   };
   return (
     <div
@@ -151,8 +158,15 @@ const Authbox = ({ userid, programid, setisValid }) => {
 
 const LiveEditor = () => {
   const { userid, programid } = useParams();
-  const [isable, setisable] = useState((localStorage.getItem(programid) ? JSON.parse(localStorage.getItem(programid)).isable : false));
-  const [isValid, setisValid] = useState((localStorage.getItem(programid) ? JSON.parse(localStorage.getItem(programid)).isValid : false));
+  const [extime,setextime] = useState(null)
+  const savedData = sessionStorage.getItem(programid);
+  const parsedData = savedData ? JSON.parse(savedData) : {};
+  const [errormessage ,seterrormessage] = useState({heading:'INVALID LINK',para:'Provide a VALID LINK PLEASE',btntext:'Go To Login'})
+
+  const [content, setcontent] = useState(parsedData.content ?? "");
+
+  const [isable, setisable] = useState(parsedData.isable ?? false);
+  const [isValid, setisValid] = useState(parsedData.isValid ?? false);
 
   const [isrunning, setisrunning] = useState(false);
   const [input, setinput] = useState("");
@@ -166,12 +180,15 @@ const LiveEditor = () => {
   );
 
   const [languages, setlanguages] = useState(monacoFormatLang);
-  const [content, setcontent] = useState((localStorage.getItem(programid) ? JSON.parse(localStorage.getItem(programid)).content : ''));
+  // const [content, setcontent] = useState(
+  //   localStorage.getItem(programid)
+  //     ? JSON.parse(localStorage.getItem(programid)).content
+  //     : ""
+  // );
   const [langCode, setLangCode] = useState(0);
   // const date = new Date(expiresat);
   // const milliseconds = date.getTime();
   // console.log(milliseconds, ":", Date.now());
-
 
   const handleselectchange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
@@ -187,151 +204,176 @@ const LiveEditor = () => {
     // }
   };
 
-  console.log("pint 1")
-const ckecklink = async ()=>{
-  console.log("pint 4")
+  console.log("pint 1");
+  const ckecklink = async () => {
+    console.log("pint 4");
 
-    const response = await program.checklink('/link-validation',programid,userid);
-    if(response.success) 
-    {
-      console.log("point 7")
+    const response = await program.checklink(
+      "/link-validation",
+      programid,
+      userid
+    );
+    console.log(response);
+    if (response.success) {
+      console.log("point 7");
+      if(!response.expired)
+      {
+        setextime(response.time)
+  
+        setisable(true);
+        const existingData = JSON.parse(sessionStorage.getItem(programid)) || {};
+        existingData.isable = true;
+        sessionStorage.setItem(programid, JSON.stringify(existingData));
+        return;
 
-      setisable(true);
-      localStorage.setItem(programid,JSON.stringify({isable:true}));
-      return;
+      }
+
+      setisable(false);
+
+
     }
-    return
+    setisable(false);
 
-
-    
-
-}
+    // localStorage.removeItem(programid);
+  };
 
   useEffect(() => {
-    console.log("pint 2")
+    console.log("pint 2");
 
-    console.log("localstorage",localStorage);
-    if(!isable)
-    {
-      console.log("pint 3")
+    // localStorage.removeItem(programid)
+    console.log("localstorage", sessionStorage);
+    console.log("pint 3");
 
-      ckecklink();
-
-    }
-
-   
+    ckecklink();
   }, []);
+
+  useEffect(() => {
+    if (content) {
+      const existingData = sessionStorage.getItem(programid);
+      if (existingData) {
+        const validationdata = JSON.parse(existingData);
+        validationdata.content = content;
+        sessionStorage.setItem(programid, JSON.stringify(validationdata));
+      }
+    }
+  }, [content]);
 
 
   useEffect(()=>{
-    if(content)
-    {
-      const validationdata = JSON.parse(localStorage.getItem(programid))
-      validationdata.content = content;
-      localStorage.setItem(programid,JSON.stringify(validationdata));
-    }
 
-  },[content])
+    
+     
+  },[extime])
 
-  console.log("pint 5")
-
-
+  console.log("pint 5");
 
   // if(!isable) return ;
 
-  console.log("pint 6")
-
+  console.log("pint 6");
 
   return (
-      <>
-      {!isable && !isValid ?      <NotificationBox heading={'INVALID LINK'} para={'if you want to work again then mke a new link '} btntext={'Go To LOGIN'} /> :''}
-    <div style={{ width: "100%", height: "100%", display: "flex" }}>
-      {isable && !isValid ?  (
-        <Authbox userid={userid} programid={programid} setisValid={setisValid} />
+    <>
+      {!isable && !isValid ? (
+        <NotificationBox
+          heading={errormessage.heading}
+          para={errormessage.para}
+          btntext={errormessage.btntext}
+        />
       ) : (
-        <>
-          <div style={{ flex: "1" }} className="resizable-container">
-            <div className="inner-navbar">
-              <span>
-                <strong style={{ fontSize: "30px" }}>RT</strong>
-                <strong style={{ color: "tomato" }}>code_EDITOR</strong>
-              </span>
-              <ul className="inner-nav-list">
-                {/* <img src={burgerimage} alt="Icon" width="20" height="20"> */}
+        ""
+      )}
+      <div style={{ width: "100%", height: "100%", display: "flex" }}>
+        {isable && !isValid ? (
+          <Authbox
+            userid={userid}
+            programid={programid}
+            setisValid={setisValid}
+            setcontent={setcontent}
+          />
+        ) : (
+          <>
+            <div style={{ flex: "1" }} className="resizable-container">
+              <div className="inner-navbar">
+                <span>
+                  <strong style={{ fontSize: "30px" }}>RT</strong>
+                  <strong style={{ color: "tomato" }}>code_EDITOR</strong>
+                </span>
+                <ul className="inner-nav-list">
+                  {/* <img src={burgerimage} alt="Icon" width="20" height="20"> */}
 
-                <li
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    borderRadius: "4px",
-                    // background:"grey",
-                    width: "320px",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <select
-                    id="coding-languages"
-                    value={language}
-                    onChange={handleselectchange}
-                  >
-                    {languages.map((val, index) => (
-                      <option
-                        key={index}
-                        value={val.name}
-                        data-defaultcode={val.defaultCode}
-                        data-lang_code={val.id}
-                      >
-                        {val.name}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    id="coding-languages"
-                    value={theme}
-                    onChange={(e) => {
-                      const selectedTheme = e.target.value;
-                      localStorage.setItem("theme", selectedTheme);
-                      settheme(selectedTheme);
-                    }}
-                  >
-                    {monaceThemes.map((val, index) => (
-                      <option key={index} value={val.name}>
-                        {val.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div
+                  <li
                     style={{
                       display: "flex",
-                      width: "65px",
+                      alignItems: "center",
+                      borderRadius: "4px",
+                      // background:"grey",
+                      width: "320px",
                       justifyContent: "space-between",
                     }}
                   >
-                    <button
-                      title="input terminal"
-                      style={{
-                        padding: "3px",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => setisviewinput(!isviewinput)}
+                    <select
+                      id="coding-languages"
+                      value={language}
+                      onChange={handleselectchange}
                     >
-                      &gt;_i
-                    </button>
-                    <button
-                      title="output terminal"
-                      style={{
-                        padding: "3px",
-                        borderRadius: "5px",
-                        cursor: "pointer",
+                      {languages.map((val, index) => (
+                        <option
+                          key={index}
+                          value={val.name}
+                          data-defaultcode={val.defaultCode}
+                          data-lang_code={val.id}
+                        >
+                          {val.name}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      id="coding-languages"
+                      value={theme}
+                      onChange={(e) => {
+                        const selectedTheme = e.target.value;
+                        localStorage.setItem("theme", selectedTheme);
+                        settheme(selectedTheme);
                       }}
-                      onClick={() => setisviewoutput(!isviewoutput)}
                     >
-                      &lt;_o
-                    </button>
-                  </div>
-                </li>
-                {/* <li style={{ alignSelf: "flex-end" }} onClick={handleBurgerClick}>
+                      {monaceThemes.map((val, index) => (
+                        <option key={index} value={val.name}>
+                          {val.name}
+                        </option>
+                      ))}
+                    </select>
+                    <div
+                      style={{
+                        display: "flex",
+                        width: "65px",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <button
+                        title="input terminal"
+                        style={{
+                          padding: "3px",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => setisviewinput(!isviewinput)}
+                      >
+                        &gt;_i
+                      </button>
+                      <button
+                        title="output terminal"
+                        style={{
+                          padding: "3px",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => setisviewoutput(!isviewoutput)}
+                      >
+                        &lt;_o
+                      </button>
+                    </div>
+                  </li>
+                  {/* <li style={{ alignSelf: "flex-end" }} onClick={handleBurgerClick}>
               <img src={burgerimage} alt="imag" width="25px" />
             </li>
             <DropdownMenu
@@ -340,69 +382,71 @@ const ckecklink = async ()=>{
               language={language}
               onClose={() => setIsMenuVisible(false)}
             /> */}
-              </ul>
-            </div>
-            {isviewinput && (
-              <InputBox heading={"Input Box"} value={"give input here"} />
-            )}
-            {isviewoutput && <InputBox heading={"Output Box"} value={output} />}
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                // height: "400px",
-                border: "1px solid black",
-              }}
-            >
-              <Editor
-                // style={{
-                //   flex: "1",
-                // }}
-                // value={content}
-                height="100%"
-                width="100%"
-                onChange={(value) => {
-                  setcontent(value);
+                </ul>
+              </div>
+              {isviewinput && (
+                <InputBox heading={"Input Box"} value={"give input here"} />
+              )}
+              {isviewoutput && (
+                <InputBox heading={"Output Box"} value={output} />
+              )}
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  // height: "400px",
+                  border: "1px solid black",
                 }}
-                options={editorOptions}
-                value={content}
-                language={language}
-                theme={theme}
-                defaultLanguage={language}
-              />
-            </div>
-            <button
-              className="run-button"
-              onClick={async (e) => {
-                e.preventDefault();
-                if (!language || !content) {
-                  alert(
-                    "please select language or check your content not be empty"
-                  );
-                  return;
-                }
-                setisrunning(true);
-                const response = await program.getoutput(
-                  "/output",
-                  content,
-                  langCode,
-                  input
-                );
-                // if (response.success) {
-                console.log("output Response:", response.data);
-                setoutput(response.data.output);
-                setisrunning(false);
-                
-                // }
-              }}
               >
-              run code
-            </button>
-          </div>
-        </>
-      )}
-    </div>
-      </>
+                <Editor
+                  // style={{
+                  //   flex: "1",
+                  // }}
+                  // value={content}
+                  height="100%"
+                  width="100%"
+                  onChange={(value) => {
+                    setcontent(value);
+                  }}
+                  options={editorOptions}
+                  value={content}
+                  language={language}
+                  theme={theme}
+                  defaultLanguage={language}
+                />
+              </div>
+              <button
+                className="run-button"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  if (!language || !content) {
+                    alert(
+                      "please select language or check your content not be empty"
+                    );
+                    return;
+                  }
+                  setisrunning(true);
+                  const response = await program.getoutput(
+                    "/output",
+                    content,
+                    langCode,
+                    input
+                  );
+                  // if (response.success) {
+                  console.log("output Response:", response.data);
+                  setoutput(response.data.output);
+                  setisrunning(false);
+
+                  // }
+                }}
+              >
+                run code
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 
