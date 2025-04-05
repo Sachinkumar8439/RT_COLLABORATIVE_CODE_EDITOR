@@ -25,6 +25,8 @@ const {
 const {
     LinkGenerate,
     TerminateLiveLink,
+    checkLink,
+    validateMember,
 } = require("../controllers/LiveLink");
 
 router.post('/output',CodeOutput);
@@ -42,6 +44,8 @@ router.post('/log-in',LogIn);
 
 router.post('/live-editor',auth,LinkGenerate);
 router.post('/terminate-live-link',auth,TerminateLiveLink);
+router.post('/link-validation',checkLink);
+router.post('/member-validate',validateMember);
 
 
 module.exports = router;
