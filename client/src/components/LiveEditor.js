@@ -96,7 +96,8 @@ const Authbox = ({ userid, programid, setisValid }) => {
   const handlesubmit = async (e) => {
     e.preventDefault();
     console.log(data);
-    const response = await program.verifymemeber('/verify-member',data.programId,data.Code,data.userName);
+    const response = await program.verifymemeber('/member-validate',data.programId,data.Code,data.userName);
+    console.log(response)
     if(response.success)
       {
         setisValid(true);
@@ -165,7 +166,7 @@ const LiveEditor = () => {
   );
 
   const [languages, setlanguages] = useState(monacoFormatLang);
-  const [content, setcontent] = useState("");
+  const [content, setcontent] = useState((localStorage.getItem(programid) ? JSON.parse(localStorage.getItem(programid)).content : ''));
   const [langCode, setLangCode] = useState(0);
   // const date = new Date(expiresat);
   // const milliseconds = date.getTime();
@@ -190,16 +191,16 @@ const LiveEditor = () => {
 const ckecklink = async ()=>{
   console.log("pint 4")
 
-    const response = await program.checklink('check-link',programid,userid);
+    const response = await program.checklink('/link-validation',programid,userid);
     if(response.success) 
     {
+      console.log("point 7")
 
       setisable(true);
       localStorage.setItem(programid,JSON.stringify({isable:true}));
       return;
     }
-
-    <NotificationBox heading={'INVALID LINK'} para={'if you want to work again then mke a new link '} btntext={'Go To LOGIN'} /> ;
+    return
 
 
     
@@ -209,6 +210,7 @@ const ckecklink = async ()=>{
   useEffect(() => {
     console.log("pint 2")
 
+    console.log("localstorage",localStorage);
     if(!isable)
     {
       console.log("pint 3")
@@ -219,16 +221,30 @@ const ckecklink = async ()=>{
 
    
   }, []);
+
+
+  useEffect(()=>{
+    if(content)
+    {
+      const validationdata = JSON.parse(localStorage.getItem(programid))
+      validationdata.content = content;
+      localStorage.setItem(programid,JSON.stringify(validationdata));
+    }
+
+  },[content])
+
   console.log("pint 5")
 
 
 
-  if(!isable) return 
+  // if(!isable) return ;
 
   console.log("pint 6")
 
 
   return (
+      <>
+      {!isable && !isValid ?      <NotificationBox heading={'INVALID LINK'} para={'if you want to work again then mke a new link '} btntext={'Go To LOGIN'} /> :''}
     <div style={{ width: "100%", height: "100%", display: "flex" }}>
       {isable && !isValid ?  (
         <Authbox userid={userid} programid={programid} setisValid={setisValid} />
@@ -376,16 +392,17 @@ const ckecklink = async ()=>{
                 console.log("output Response:", response.data);
                 setoutput(response.data.output);
                 setisrunning(false);
-
+                
                 // }
               }}
-            >
+              >
               run code
             </button>
           </div>
         </>
       )}
     </div>
+      </>
   );
 };
 
