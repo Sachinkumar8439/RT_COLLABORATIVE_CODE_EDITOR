@@ -211,6 +211,22 @@ const Codingsection = ({ socket, user }) => {
               borderRadius: "4px",
             }}
           >
+
+            <button
+            onClick={async (e)=>{
+              e.preventDefault();
+              const response = await program.getlink('/live-editor',currentfile._id,token)
+              console.log(response)
+              if(response.success)
+              {
+                console.log(response);
+                navigator.clipboard.writeText(response.link)
+                console.log('password',response.password)
+
+              }
+
+            }}
+            >copy link </button>
             <select
               id="coding-languages"
               value={language}
