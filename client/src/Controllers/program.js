@@ -141,6 +141,43 @@ const getlink = async (route, programId) => {
   }
 };
 
+const checklink = async (route, programId,userId) => {
+  if (!route || !programId || !userId) {
+    throw new Error("All parameters (userKey, programId,userId) are required.");
+  }
+
+  try {
+    const response = await apiRequest("post", `${BASE_URL}${route}`, {
+      programId,
+      userId,
+     
+    });
+    return response;
+  } catch (error) {
+    console.error("Error in getlink:", error.message);
+    throw error;
+  }
+};
+
+const verifymemeber = async (route, programId,code,username) => {
+  if (!route || !programId || !code) {
+    throw new Error("All parameters (userKey, programId,userId) are required.");
+  }
+
+  try {
+    const response = await apiRequest("post", `${BASE_URL}${route}`, {
+      programId,
+      username,
+      code,
+     
+    });
+    return response;
+  } catch (error) {
+    console.error("Error in getlink:", error.message);
+    throw error;
+  }
+};
+
 const terminatelink = async (route, programId) => {
   if (!route || !programId ) {
     throw new Error("All parameters (route, programid) are required.");
@@ -166,6 +203,8 @@ const programControllers = {
   getlanguages,
   terminatelink,
   getlink,
+  checklink,
+  verifymemeber
 };
 
 export default programControllers;

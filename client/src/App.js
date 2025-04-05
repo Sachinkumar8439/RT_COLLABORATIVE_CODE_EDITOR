@@ -31,7 +31,7 @@ function App() {
                 element={token === null ? <AuthForm /> : <Navigate to="/" />}
               />
               <Route
-                path="/edit/p/:userid/:programid/:expiresat"
+                path="/edit/p/:userid/:programid"
                 element={<LiveEditor />}
               />
               <Route path="*" element={ <Navigate to ="/"/>} />

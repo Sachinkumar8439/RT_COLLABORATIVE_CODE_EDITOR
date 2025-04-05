@@ -14,6 +14,7 @@ import "react-resizable/css/styles.css";
 import { monacoFormatLang, monaceThemes, editorOptions } from "../data";
 import { useParams } from "react-router-dom";
 import "../Styles/AuthForm.css";
+import NotificationBox from "./Notice";
 
 const InputBox = ({ heading, value }) => {
   const handleInput = (e) => {
@@ -83,19 +84,28 @@ const InputBox = ({ heading, value }) => {
   );
 };
 
-const Authbox = ({ userid, programid, setisable }) => {
+const Authbox = ({ userid, programid, setisValid }) => {
   const [error, seterror] = useState("");
   const [data, setdata] = useState({
     userName: "",
     Code: "",
-    userId: userid,
+    // userId: userid,
     programId: programid,
   });
 
   const handlesubmit = async (e) => {
     e.preventDefault();
     console.log(data);
-    setisable(true);
+    const response = await program.verifymemeber('/verify-member',data.programId,data.Code,data.userName);
+    if(response.success)
+      {
+        setisValid(true);
+       const validationdata =  JSON.parse(localStorage.getItem(programid));
+       validationdata.isValid = true;
+       localStorage.setItem(programid,JSON.stringify(validationdata))
+        return;
+      }    
+      seterror(response.message);
   };
   return (
     <div
@@ -139,8 +149,9 @@ const Authbox = ({ userid, programid, setisable }) => {
 };
 
 const LiveEditor = () => {
-  const [isable, setisable] = useState(false);
-  const { userid, programid, expiresat } = useParams();
+  const { userid, programid } = useParams();
+  const [isable, setisable] = useState((localStorage.getItem(programid) ? JSON.parse(localStorage.getItem(programid)).isable : false));
+  const [isValid, setisValid] = useState((localStorage.getItem(programid) ? JSON.parse(localStorage.getItem(programid)).isValid : false));
 
   const [isrunning, setisrunning] = useState(false);
   const [input, setinput] = useState("");
@@ -156,10 +167,10 @@ const LiveEditor = () => {
   const [languages, setlanguages] = useState(monacoFormatLang);
   const [content, setcontent] = useState("");
   const [langCode, setLangCode] = useState(0);
-  const date = new Date(expiresat);
-  const milliseconds = date.getTime();
-  console.log(milliseconds, ":", Date.now());
-  const isValid = milliseconds >= Date.now();
+  // const date = new Date(expiresat);
+  // const milliseconds = date.getTime();
+  // console.log(milliseconds, ":", Date.now());
+
 
   const handleselectchange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
@@ -175,12 +186,52 @@ const LiveEditor = () => {
     // }
   };
 
-  useEffect(() => {}, []);
+  console.log("pint 1")
+const ckecklink = async ()=>{
+  console.log("pint 4")
+
+    const response = await program.checklink('check-link',programid,userid);
+    if(response.success) 
+    {
+
+      setisable(true);
+      localStorage.setItem(programid,JSON.stringify({isable:true}));
+      return;
+    }
+
+    <NotificationBox heading={'INVALID LINK'} para={'if you want to work again then mke a new link '} btntext={'Go To LOGIN'} /> ;
+
+
+    
+
+}
+
+  useEffect(() => {
+    console.log("pint 2")
+
+    if(!isable)
+    {
+      console.log("pint 3")
+
+      ckecklink();
+
+    }
+
+   
+  }, []);
+  console.log("pint 5")
+
+
+
+  if(!isable) return 
+
+  console.log("pint 6")
+
 
   return (
     <div style={{ width: "100%", height: "100%", display: "flex" }}>
-      {!isable && isValid ? (
-        <Authbox userid={userid} programid={programid} setisable={setisable} />
+      {isable && !isValid ?  (
+        <Authbox userid={userid} programid={programid} setisValid={setisValid} />
       ) : (
         <>
           <div style={{ flex: "1" }} className="resizable-container">
