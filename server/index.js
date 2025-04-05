@@ -33,6 +33,18 @@ app.use("/rtcce/version-1.0/", Routes);
 databaseConnect();
 io.on("connection", (socket) => {
   console.log(`Socket ${socket.id} connected`);
+
+  socket.on('join-room',(programid)=>{
+  console.log('i am joinin the group')
+    socket.join(programid);
+    socket.to(programid).emit('say-hello',('hello'));
+
+  })
+
+  socket.on('send-text',(data)=>{
+    console.log(data);
+    socket.to(data.programid).emit('get-text',(data))
+  })
   
   socket.on("send-updated-code", (value) => {
     socket.broadcast.emit("get-updated-code", value);

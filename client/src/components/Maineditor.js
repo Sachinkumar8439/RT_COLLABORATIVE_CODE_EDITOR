@@ -14,18 +14,18 @@ const Maineditor = () => {
   
   const socket = useSocket();
 
-  useEffect(() => {
-    console.log("socket wokrs here");
-    socket.on("load-updated-content", (data) => {
-      console.log("run loading", data);
-    });
+  // useEffect(() => {
+  //   console.log("socket wokrs here");
+  //   socket.on("load-updated-content", (data) => {
+  //     console.log("run loading", data);
+  //   });
 
-    localStorage.removeItem('token');
+  //   localStorage.removeItem('token');
 
-    return () => {
-      socket.off("use me");
-    };
-  }, [socket]);
+  //   return () => {
+  //     socket.off("use me");
+  //   };
+  // }, [socket]);
 
   return (
     <div className="main-editor">

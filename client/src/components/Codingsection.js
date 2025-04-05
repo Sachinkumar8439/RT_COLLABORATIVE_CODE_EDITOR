@@ -75,6 +75,7 @@ const Codingsection = ({ socket, user }) => {
       );
 
       setcontent(value);
+      socket.emit('send-text',({value , programid:currentfile._id}))
       localStorage.setItem("lastcode", value);
       const response = await program.saveProgram(
         "/code-save",
@@ -89,6 +90,25 @@ const Codingsection = ({ socket, user }) => {
       return;
     }
   };
+
+    useEffect(() => {
+    
+       socket.on('say-hello',(data)=>{
+        console.log('hello');
+  
+       })
+  
+       socket.on('get-text',(data)=>{
+        setcontent(data.value)
+        console.log("bhosda choda")
+  
+       })
+    
+        // localStorage.removeItem('token');
+        return () => {
+          socket.off('sah-hello');
+        };
+      }, [socket]);
 
   const handleSubmit = async (programname) => {
     console.log("submit button clicked", programname);
@@ -129,7 +149,7 @@ const Codingsection = ({ socket, user }) => {
   // main functions
   const handleselectchange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
-    if (selectedOption.text === language) return;
+    // if (selectedOption.text === language) return;
     const selectedLang = monacoFormatLang.find(
       (lang) => lang.name === e.target.value
     );
@@ -142,16 +162,6 @@ const Codingsection = ({ socket, user }) => {
     // }
   };
 
-  useEffect(() => {
-    socket.on("get-updated-code", (data) => {
-      console.log("this get updated code works", data.value);
-      setcontent(`${data.value}`);
-    });
-
-    return () => {
-      socket.off("get-updated-code");
-    };
-  }, [socket]);
 
   const fetchfiles = async () => {
     const result = await program.loadPrograms("/get-files", token);
@@ -166,6 +176,7 @@ const Codingsection = ({ socket, user }) => {
   };
 
   useEffect(() => {
+    socket.emit('join-room',{programid:currentfile._id})
     if (currentfile) {
       setcontent(currentfile.code);
     }

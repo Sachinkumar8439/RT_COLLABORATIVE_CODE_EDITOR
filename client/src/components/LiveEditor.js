@@ -15,6 +15,8 @@ import { monacoFormatLang, monaceThemes, editorOptions } from "../data";
 import { useParams } from "react-router-dom";
 import "../Styles/AuthForm.css";
 import NotificationBox from "./Notice";
+import { useSocket } from "../Context/SocketContetx";
+
 
 const InputBox = ({ heading, value }) => {
   const handleInput = (e) => {
@@ -85,6 +87,7 @@ const InputBox = ({ heading, value }) => {
 };
 
 const Authbox = ({ userid, programid, setisValid, setcontent }) => {
+  const socket = useSocket()
   const [error, seterror] = useState("");
   const [data, setdata] = useState({
     userName: "",
@@ -111,6 +114,7 @@ const Authbox = ({ userid, programid, setisValid, setcontent }) => {
       existingData.content = response.data.code;
       sessionStorage.setItem(programid, JSON.stringify(existingData));
       console.log("localstorage",localStorage)
+      socket.emit('join-room',(programid))
       return;
     }
     seterror(response.message);
@@ -204,6 +208,26 @@ const LiveEditor = () => {
     // }
   };
 
+
+    const socket = useSocket();
+  useEffect(() => {
+  
+     socket.on('say-hello',(data)=>{
+      console.log('hello');
+
+     })
+
+     socket.on('get-text',(data)=>{
+      setcontent(data.value)
+
+     })
+  
+      // localStorage.removeItem('token');
+      return () => {
+        socket.off('sah-hello');
+      };
+    }, [socket]);
+
   console.log("pint 1");
   const ckecklink = async () => {
     console.log("pint 4");
@@ -228,6 +252,9 @@ const LiveEditor = () => {
 
       }
 
+      seterrormessage({heading:'LINK EXPIRED',para:'This link duration is crossed its time limit .. create a new one',btntext:'BHAAG BHOSDA KE'});
+
+
       setisable(false);
 
 
@@ -238,6 +265,7 @@ const LiveEditor = () => {
   };
 
   useEffect(() => {
+
     console.log("pint 2");
 
     // localStorage.removeItem(programid)
@@ -260,6 +288,19 @@ const LiveEditor = () => {
 
 
   useEffect(()=>{
+
+    if(extime)
+      {
+      const currenttime = Date.now()
+      setTimeout(() => {
+        setisValid(false);
+        setisable(false);
+        sessionStorage.removeItem(programid);
+        seterrormessage({heading:'TIME UP',para:'your time limit ended make new if required',btntext:'Go to login'});
+        
+      }, extime-currenttime);
+
+    }
 
     
      
@@ -407,6 +448,7 @@ const LiveEditor = () => {
                   width="100%"
                   onChange={(value) => {
                     setcontent(value);
+                    socket.emit('send-text',({value,programid}))
                   }}
                   options={editorOptions}
                   value={content}
