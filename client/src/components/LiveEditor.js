@@ -114,7 +114,6 @@ const Authbox = ({ userid, programid, setisValid, setcontent }) => {
       existingData.content = response.data.code;
       sessionStorage.setItem(programid, JSON.stringify(existingData));
       console.log("localstorage",localStorage)
-      socket.emit('join-room',(programid))
       return;
     }
     seterror(response.message);
@@ -207,27 +206,28 @@ const LiveEditor = () => {
     // if(content === ""){
     // }
   };
-
-
-    const socket = useSocket();
+  
+  
+  const socket = useSocket();
   useEffect(() => {
   
-     socket.on('say-hello',(data)=>{
+
+    socket.on('say-hello',(data)=>{
       console.log('hello');
-
-     })
-
-     socket.on('get-text',(data)=>{
+      
+    })
+    
+    socket.on('get-text',(data)=>{
       setcontent(data.value)
-
-     })
+      
+    })
+    
+    // localStorage.removeItem('token');
+    return () => {
+      socket.off('say-hello');
+    };
+  }, [socket]);
   
-      // localStorage.removeItem('token');
-      return () => {
-        socket.off('sah-hello');
-      };
-    }, [socket]);
-
   console.log("pint 1");
   const ckecklink = async () => {
     console.log("pint 4");
@@ -265,7 +265,8 @@ const LiveEditor = () => {
   };
 
   useEffect(() => {
-
+    
+    
     console.log("pint 2");
 
     // localStorage.removeItem(programid)
@@ -273,6 +274,7 @@ const LiveEditor = () => {
     console.log("pint 3");
 
     ckecklink();
+
   }, []);
 
   useEffect(() => {
@@ -305,6 +307,10 @@ const LiveEditor = () => {
     
      
   },[extime])
+
+  console.log("comming in socket");
+    console.log("isbale", isable,"isvalid0", isValid);
+    if(isable && isValid) socket.emit('join-room',(programid))
 
   console.log("pint 5");
 

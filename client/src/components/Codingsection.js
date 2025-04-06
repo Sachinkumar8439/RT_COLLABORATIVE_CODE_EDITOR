@@ -7,6 +7,14 @@ import Editor from "@monaco-editor/react";
 import { monacoFormatLang, monaceThemes, editorOptions } from "../data";
 import ProgramForm from "./ProgramForm";
 
+
+const lastfile = JSON.parse(localStorage.getItem('lastfile'));
+
+// Compute match only once during the first render
+const match = monacoFormatLang.find(
+  (val) => val.extension === (lastfile && lastfile.extension)
+) || null;
+
 const Codingsection = ({ socket, user }) => {
   const [token, settoken] = useState(localStorage.getItem("token"));
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -21,22 +29,39 @@ const Codingsection = ({ socket, user }) => {
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 
   // main state variables
-  const { setoutput, input, setInput, setisrunning } = useContext(StateContext);
 
-  const [theme, settheme] = useState(localStorage.getItem("theme") || "vs");
-  const [language, setlanguage] = useState(localStorage.getItem('language') || '');
-  const [defaultCode, setdefaultCode] = useState(
-    monacoFormatLang[0].defaultCode
-  );
+
+
+
+// useState hooks that depend on match
+const [theme, settheme] = useState(localStorage.getItem("theme") || "vs");
+const [language, setlanguage] = useState(match ? match.name : monacoFormatLang[0].name);
+const [langCode, setLangCode] = useState(match ? match.id : 0);
+const [defaultCode, setdefaultCode] = useState(
+  match ? match.defaultCode : monacoFormatLang[0].defaultCode
+);
+
+const [isChecked,setisChecked] = useState(false);
+
+  const { setoutput, input, setInput, setisrunning } = useContext(StateContext);
+  
+  // const [theme, settheme] = useState(localStorage.getItem("theme") || "vs");
+  // const [language, setlanguage] = useState(match ? match.name : monacoFormatLang[0].name);
+  // const [langCode, setLangCode] = useState(match ? match.id :0);
+  // const [defaultCode, setdefaultCode] = useState(
+  //   monacoFormatLang[0].defaultCode
+  // );
+
+  // console.log("language",language,"langCode", langCode,"default code ",defaultCode)
 
   const [languages, setlanguages] = useState(monacoFormatLang);
   const [files, setfiles] = useState(null);
-  const [content, setcontent] = useState(
-    ''
+  const [currentfile, setcurrentfile] = useState( lastfile || null );
+  const [content, setcontent] = useState(lastfile ? lastfile.code : ''
   );
-  const [currentfile, setcurrentfile] = useState(JSON.parse(localStorage.getItem('lastfile')) || null );
+
+  // console.log('current file ',currentfile , " cuntent ", content)
   const fileref = useRef(null);
-  const [langCode, setLangCode] = useState(0);
 
   const handleBurgerClick = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -67,24 +92,27 @@ const Codingsection = ({ socket, user }) => {
   };
 
   const handlewriting = async (value) => {
-    console.log("fileref", fileref.current, "token", token, "value", value);
-    if (value && token &&  currentfile) {
-      const fileData = currentfile;
-      setfiles((prev) =>
-        prev.map((f) => (f._id === fileData._id ? { ...f, code: value } : f))
-      );
+    console.log( "token", token, "value", value);
+    if (token &&  currentfile) {
+      currentfile.code = value;
+      localStorage.setItem("lastfile",JSON.stringify(currentfile));
 
-      setcontent(value);
-      socket.emit('send-text',({value , programid:currentfile._id}))
-      localStorage.setItem("lastcode", value);
-      const response = await program.saveProgram(
-        "/code-save",
-        token,
-        fileData.fileName,
-        fileData.extention,
-        value,
-        fileData._id,
-      );
+      setfiles((prev) =>
+        prev.map((f) => (f._id === currentfile._id ? { ...f, code: value } : f))
+    );
+    
+    
+    //  localStorage.setItem('lastfile',JSON.stringify(currentfile));
+    const response = await program.saveProgram(
+      "/code-save",
+      token,
+      currentfile.fileName,
+      currentfile.extention,
+      value,
+      currentfile._id,
+    );
+    socket.emit('send-text',({value , programid:currentfile._id}))
+    setcontent(value);
       console.log("Text saving:", response);
 
       return;
@@ -92,23 +120,32 @@ const Codingsection = ({ socket, user }) => {
   };
 
     useEffect(() => {
+      // console.log("this is runnung here socket effect ")
+      // console.log(currentfile._id)
+
     
        socket.on('say-hello',(data)=>{
+      
         console.log('hello');
   
        })
   
        socket.on('get-text',(data)=>{
-        setcontent(data.value)
-        console.log("bhosda choda")
+        if(data.programid === currentfile._id)
+        {
+          // setcontent(data.value)
+          handlewriting(data.value);
+          console.log("bhosda choda")
+
+        }
   
        })
     
         // localStorage.removeItem('token');
         return () => {
-          socket.off('sah-hello');
+          // socket.off('say-hello');
         };
-      }, [socket]);
+      }, []);
 
   const handleSubmit = async (programname) => {
     console.log("submit button clicked", programname);
@@ -139,7 +176,12 @@ const Codingsection = ({ socket, user }) => {
         if (response.success) {
           console.log("success hai bhai ", response);
           setcurrentfile(response.file);
+
+
+          
           setfiles((pre) => [response.file, ...pre]);
+
+          
         }
       }
       return;
@@ -149,17 +191,21 @@ const Codingsection = ({ socket, user }) => {
   // main functions
   const handleselectchange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
-    // if (selectedOption.text === language) return;
     const selectedLang = monacoFormatLang.find(
       (lang) => lang.name === e.target.value
     );
     setlanguage(selectedOption.text);
     setdefaultCode(selectedOption.getAttribute("data-defaultcode"));
-    localStorage.setItem('language',selectedOption.text)
+    // localStorage.setItem('language',selectedOption.text)
     setLangCode(selectedOption.getAttribute("data-lang_code"));
-    if (!content) setcontent(selectedLang.defaultCode);
-    // if(content === ""){
-    // }
+
+    console.log("i am sellecting the languge and content is  ", content)
+    if (!content || content.trim() === "") {
+      setcontent(selectedLang.defaultCode);
+      currentfile.code = selectedLang.defaultCode;
+      localStorage.setItem('lastfile',JSON.stringify(currentfile));
+    }
+    
   };
 
 
@@ -176,19 +222,37 @@ const Codingsection = ({ socket, user }) => {
   };
 
   useEffect(() => {
-    socket.emit('join-room',{programid:currentfile._id})
+    console.log("change in current file",currentfile);
+    // socket.emit('join-room',{programid:currentfile._id})
     if (currentfile) {
-      setcontent(currentfile.code);
+      const matched = monacoFormatLang.find(val => val.extension === currentfile.extension);
+
+      if (matched) {
+
+        if(currentfile.code.trim() ==='')
+          {
+            setcontent(matched.defaultCode);
+            
+          }
+          else
+          {
+            setcontent(currentfile.code);
+
+          }
+        setlanguage(matched.name);
+        setLangCode(matched.id);
+      }
+      
+      // localStorage.setItem('lastfile',JSON.stringify(currentfile));
     }
   }, [currentfile]);
 
   useEffect(() => {
     fetchfiles();
     console.log("localstorage", localStorage);
-    setcontent(localStorage.getItem("lastcode"));
+    // setcontent(localStorage.getItem("lastcode"));
 
     return () => {
-      localStorage.setItem("lastcode", content);
     };
   }, []);
 
@@ -237,7 +301,27 @@ const Codingsection = ({ socket, user }) => {
               }
 
             }}
+
+            
             >copy link </button>
+{/* <!-- Rounded switch --> */}
+<label className="switch">
+      <input type="checkbox" checked={isChecked} onChange={(e)=>{
+   
+   setisChecked(e.target.checked);
+
+   if (e.target.checked) {
+    console.log("Switch is ON ✅");
+    socket.emit('join-room',(currentfile._id));
+    // do something when ON
+  }
+  else{
+    console.log("switch off ");
+    socket.emit("leave-room", currentfile._id);
+  }
+      }} />
+      <span className="slider round"></span>
+    </label>
             <select
               id="coding-languages"
               value={language}

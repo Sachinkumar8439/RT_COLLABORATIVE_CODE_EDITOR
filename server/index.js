@@ -40,6 +40,10 @@ io.on("connection", (socket) => {
     socket.to(programid).emit('say-hello',('hello'));
 
   })
+  socket.on('leave-room', (roomId) => {
+    socket.leave(roomId);
+    console.log(`User left room: ${roomId}`);
+  });
 
   socket.on('send-text',(data)=>{
     console.log(data);
