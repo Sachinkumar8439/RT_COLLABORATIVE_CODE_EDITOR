@@ -30,22 +30,22 @@
 
 .nav-link-btn-div {
   display: flex;
+  list-style: none;
   align-items: center;
   gap: 20px;
 }
 
-.navbar-links {
+/* .navbar-links {
   display: flex;
-  list-style: none;
+  align-items: center;
   gap: 20px;
-}
-
-.navbar-links li {
+} */
+.nav-link-btn-div li {
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
-.navbar-links li:hover {
+.nav-link-btn-div li:hover {
   color: #aaa;
 }
 

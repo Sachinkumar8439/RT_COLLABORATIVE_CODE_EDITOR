@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 
 const NotificationBox = ({ heading, para, btntext }) => {
   const navigate = useNavigate();
+  const { Heading , Para , Btntext } = {Heading:"SESSION EXPIRED",Para:'your session has been expired login again',Btntext:'Go to login'};
+
 
   const wrapperStyle = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     minHeight: "100vh",
-    // background: "linear-gradient(135deg, #e0f7ff, #c7d2fe)", // light gradient background
     background:"none",
   };
 
@@ -41,21 +42,23 @@ const NotificationBox = ({ heading, para, btntext }) => {
   };
 
   const handleNavigation = () => {
-    navigate("/target-route"); // Change to your actual path
+    navigate("/"); 
   };
 
   return (
     <div style={wrapperStyle}>
       <div style={boxStyle}>
-        <h2>{heading}</h2>
-        <p>{para}</p>
+        <h2 style={{
+          margin:'10px'
+        }}>{heading || Heading }</h2>
+        <p>{para || Para}</p>
         <button
           style={buttonStyle}
           onMouseOver={(e) => (e.target.style.backgroundColor = "#0369a1")}
           onMouseOut={(e) => (e.target.style.backgroundColor = "#0284c7")}
           onClick={handleNavigation}
         >
-          {btntext}
+          {btntext || Btntext}
         </button>
       </div>
     </div>

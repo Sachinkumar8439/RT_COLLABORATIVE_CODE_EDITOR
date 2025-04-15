@@ -10,11 +10,9 @@ const saveProgram = async (
   code,
   id ,
 ) => {
-  console.log("code is ",code," id ",id,token)
   if (!route || !token ) {
     throw new Error("All parameters are required.",token,code);
   }
-  console.log(fileName, extension, id);
   try {
     const response = await apiRequest("post", `${BASE_URL}${route}`, {
       token,
@@ -25,7 +23,6 @@ const saveProgram = async (
     });
     return response;
   } catch (error) {
-    console.error("Error in createProgram:", error.message);
     throw error;
   }
 };
@@ -42,36 +39,15 @@ const deleteProgram = async (route, userKey, programkey) => {
     });
     return response;
   } catch (error) {
-    console.error("Error in createProgram:", error.message);
     throw error;
   }
 };
 
-// const saveProgram = async (route, userKey, programkey, updatingdata) => {
-//   if (!route || !userKey || !programkey || !updatingdata) {
-//     throw new Error(
-//       "All parameters (userKey,programkey, updatingdata) are required."
-//     );
-//   }
-
-//   try {
-//     const response = await apiRequest("post", `${BASE_URL}${route}`, {
-//       userKey,
-//       programkey,
-//       updatingdata,
-//     });
-//     return response;
-//   } catch (error) {
-//     console.error("Error in saveProgram:", error.message);
-//     throw error;
-//   }
-// };
 
 const loadPrograms = async (route, token) => {
   if (!route) {
     throw new Error("All parameters (userKey,) are required.");
   }
-  console.log("token arha hai", token);
 
   try {
     const response = await apiRequest("post", `${BASE_URL}${route}`, {
@@ -79,18 +55,15 @@ const loadPrograms = async (route, token) => {
     });
     return response;
   } catch (error) {
-    console.error("Error in saveProgram:", error.message);
     throw error;
   }
 };
 
 const getoutput = async (route, program, langCode, userStdin) => {
-  console.log("program",program,langCode,userStdin)
   if (!route || !program ) {
-    throw new Error("All parameters (userKey,) are required.");
+    throw new Error("All parameters (program,) are required.");
   }
 
-  // alert("userStdnin:",userStdin);
 
   try {
     const response = await apiRequest("post", `${BASE_URL}${route}`, {
@@ -100,7 +73,6 @@ const getoutput = async (route, program, langCode, userStdin) => {
     });
     return response;
   } catch (error) {
-    console.error("Error in saveProgram:", error.message);
     throw error;
   }
 };
@@ -112,14 +84,8 @@ const getlanguages = async (route) => {
 
   try {
     const response = await apiRequest("get", `${BASE_URL}${route}`);
-
-    console.log(
-      "Hello i am under getlanguage-----------------------",
-      response.data
-    );
     return response;
   } catch (error) {
-    console.error("Error in saveProgram:", error.message);
     throw error;
   }
 };

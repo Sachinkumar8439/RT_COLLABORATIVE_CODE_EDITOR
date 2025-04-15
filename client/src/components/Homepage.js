@@ -1,24 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import Hero from './Hero';
-import { useNavigate } from 'react-router-dom';
-
+import React from "react";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import Hero from "./Hero";
 
 const Homepage = () => {
-  
- 
-
-
-
-
   return (
     <div>
-      <Navbar/>
-      <Hero/>
-      <Footer/>
-       
-       </div>
+      <Navbar />
+      <Hero />
+      <Footer />
+    </div>
   );
 };
 

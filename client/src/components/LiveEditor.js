@@ -1,10 +1,6 @@
-import React, {
-  useState,
-  forwardRef,
-  useRef,
-  useEffect,
-  useContext,
-} from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { PulseLoader } from "react-spinners";
+
 import Draggable from "react-draggable";
 import program from "../Controllers/program";
 import Editor from "@monaco-editor/react";
@@ -17,23 +13,21 @@ import "../Styles/AuthForm.css";
 import NotificationBox from "./Notice";
 import { useSocket } from "../Context/SocketContetx";
 
-
-const InputBox = ({ heading, value }) => {
+const InputBox = ({ heading, value, setinput ,isrunning }) => {
   const handleInput = (e) => {
-    console.log(e.target.textContent);
+    e.preventDefault();
+    setinput(e.target.textContent);
   };
 
   const nodeRef = useRef(null);
   const [size, setSize] = useState({ width: 400, height: 400 });
 
-  // Handle Resize
   const onResize = (e, { size }) => {
     setSize(size);
   };
 
   return (
     <Draggable nodeRef={nodeRef} cancel=".react-resizable-handle">
-      {/* <Resizable width={size.width} height={size.height} onResize={onResize}> */}
       <div
         ref={nodeRef}
         style={{
@@ -49,7 +43,6 @@ const InputBox = ({ heading, value }) => {
           color: "white",
           display: "flex",
           flexDirection: "column",
-          // alignItems: "flex-start",
         }}
       >
         <p style={{ background: "white", color: "black", padding: "2px 5px" }}>
@@ -65,19 +58,29 @@ const InputBox = ({ heading, value }) => {
             : {})}
           style={{
             fontSize: "15px",
-            wordWrap: "break-word",
+            whiteSpace: "pre-wrap",
+            fontFamily: "monospace",
             padding: "1px 2px",
           }}
           className="input-field"
         >
           {value}
+          {heading === "Input Box" ? (
+            ""
+          ) : ( isrunning &&
+            <> 
+              <div style={styles.loaderContainer}>
+                <PulseLoader color="white" size={10} />
+              </div>
+            </>
+          )}
         </p>
 
         <Resizable
           width={size.width}
           height={size.height}
           onResize={onResize}
-          resizeHandles={["se"]} // Only bottom-right resizing
+          resizeHandles={["se"]} 
         >
           <div style={{ width: "100%", height: "100%" }} />
         </Resizable>
@@ -86,34 +89,31 @@ const InputBox = ({ heading, value }) => {
   );
 };
 
-const Authbox = ({ userid, programid, setisValid, setcontent }) => {
-  const socket = useSocket()
+const Authbox = ({ setname, programid, setisValid, setcontent }) => {
   const [error, seterror] = useState("");
   const [data, setdata] = useState({
     userName: "",
     Code: "",
-    // userId: userid,
     programId: programid,
   });
 
   const handlesubmit = async (e) => {
     e.preventDefault();
-    console.log(data);
     const response = await program.verifymemeber(
       "/member-validate",
       data.programId,
       data.Code,
       data.userName
     );
-    console.log(response);
     if (response.success) {
-      setisValid(true);
       setcontent(response.data.code);
       const existingData = JSON.parse(sessionStorage.getItem(programid)) || {};
       existingData.isValid = true;
       existingData.content = response.data.code;
+      existingData.name = data.userName;
       sessionStorage.setItem(programid, JSON.stringify(existingData));
-      console.log("localstorage",localStorage)
+      setname(data.userName);
+      setisValid(true);
       return;
     }
     seterror(response.message);
@@ -161,15 +161,21 @@ const Authbox = ({ userid, programid, setisValid, setcontent }) => {
 
 const LiveEditor = () => {
   const { userid, programid } = useParams();
-  const [extime,setextime] = useState(null)
+  const [extime, setextime] = useState(null);
   const savedData = sessionStorage.getItem(programid);
+  const [name, setname] = useState("");
   const parsedData = savedData ? JSON.parse(savedData) : {};
-  const [errormessage ,seterrormessage] = useState({heading:'INVALID LINK',para:'Provide a VALID LINK PLEASE',btntext:'Go To Login'})
+  const [errormessage, seterrormessage] = useState({
+    heading: "Validating ",
+    para: "checking of your link",
+    btntext: "loading...",
+  });
 
   const [content, setcontent] = useState(parsedData.content ?? "");
 
   const [isable, setisable] = useState(parsedData.isable ?? false);
   const [isValid, setisValid] = useState(parsedData.isValid ?? false);
+  const [isChecked, setisChecked] = useState(false);
 
   const [isrunning, setisrunning] = useState(false);
   const [input, setinput] = useState("");
@@ -178,103 +184,76 @@ const LiveEditor = () => {
   const [output, setoutput] = useState("output will be shown here");
   const [theme, settheme] = useState(localStorage.getItem("theme") || "vs");
   const [language, setlanguage] = useState();
-  const [defaultCode, setdefaultCode] = useState(
-    monacoFormatLang[0].defaultCode
-  );
 
   const [languages, setlanguages] = useState(monacoFormatLang);
-  // const [content, setcontent] = useState(
-  //   localStorage.getItem(programid)
-  //     ? JSON.parse(localStorage.getItem(programid)).content
-  //     : ""
-  // );
+
   const [langCode, setLangCode] = useState(0);
-  // const date = new Date(expiresat);
-  // const milliseconds = date.getTime();
-  // console.log(milliseconds, ":", Date.now());
+
 
   const handleselectchange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     if (selectedOption.text === language) return;
-    const selectedLang = monacoFormatLang.find(
-      (lang) => lang.name === e.target.value
-    );
-    setcontent(selectedLang.defaultCode);
     setlanguage(selectedOption.text);
-    setdefaultCode(selectedOption.getAttribute("data-defaultcode"));
     setLangCode(selectedOption.getAttribute("data-lang_code"));
-    // if(content === ""){
-    // }
   };
-  
-  
+
   const socket = useSocket();
   useEffect(() => {
-  
+    socket.on("say-hello", (data) => {
+      alert(`${data.name} has joined the room`);
+    });
 
-    socket.on('say-hello',(data)=>{
-      console.log('hello');
-      
-    })
-    
-    socket.on('get-text',(data)=>{
-      setcontent(data.value)
-      
-    })
-    
-    // localStorage.removeItem('token');
+    socket.on("get-text", (data) => {
+      setcontent(data.value);
+
+    });
+
     return () => {
-      socket.off('say-hello');
+      socket.off("get-text");
+      socket.off("say-hello");
     };
   }, [socket]);
-  
-  console.log("pint 1");
+
   const ckecklink = async () => {
-    console.log("pint 4");
 
     const response = await program.checklink(
       "/link-validation",
       programid,
       userid
     );
-    console.log(response);
     if (response.success) {
-      console.log("point 7");
-      if(!response.expired)
-      {
-        setextime(response.time)
-  
+      if (!response.expired) {
+        setextime(response.time);
+
         setisable(true);
-        const existingData = JSON.parse(sessionStorage.getItem(programid)) || {};
+        const existingData =
+          JSON.parse(sessionStorage.getItem(programid)) || {};
         existingData.isable = true;
         sessionStorage.setItem(programid, JSON.stringify(existingData));
         return;
-
       }
 
-      seterrormessage({heading:'LINK EXPIRED',para:'This link duration is crossed its time limit .. create a new one',btntext:'BHAAG BHOSDA KE'});
-
+      seterrormessage({
+        heading: "LINK EXPIRED",
+        para: "This link duration is crossed its time limit .. create a new one",
+        btntext: "go to login",
+      });
 
       setisable(false);
-
-
+      return;
     }
+    seterrormessage({
+      heading: "LINK IS INVALID",
+      para: "Please Enter a valid link ",
+      btntext: "go to login",
+    });
+
     setisable(false);
 
-    // localStorage.removeItem(programid);
   };
 
   useEffect(() => {
-    
-    
-    console.log("pint 2");
-
-    // localStorage.removeItem(programid)
-    console.log("localstorage", sessionStorage);
-    console.log("pint 3");
-
-    ckecklink();
-
+     ckecklink();
   }, []);
 
   useEffect(() => {
@@ -288,57 +267,27 @@ const LiveEditor = () => {
     }
   }, [content]);
 
-
-  useEffect(()=>{
-
-    if(extime)
-      {
-      const currenttime = Date.now()
+  useEffect(() => {
+    if (extime) {
+      const currenttime = Date.now();
       setTimeout(() => {
         setisValid(false);
         setisable(false);
         sessionStorage.removeItem(programid);
-        seterrormessage({heading:'TIME UP',para:'your time limit ended make new if required',btntext:'Go to login'});
-        
-      }, extime-currenttime);
-
+        seterrormessage({
+          heading: "TIME UP",
+          para: "your time limit ended make new if required",
+          btntext: "Go to login",
+        });
+      }, extime - currenttime);
     }
-
-    
-     
-  },[extime])
-
-  console.log("comming in socket");
-    console.log("isbale", isable,"isvalid0", isValid);
-    if(isable && isValid) socket.emit('join-room',(programid))
-
-  console.log("pint 5");
-
-  // if(!isable) return ;
-
-  console.log("pint 6");
+  }, [extime,programid]);
 
   return (
     <>
-      {!isable && !isValid ? (
-        <NotificationBox
-          heading={errormessage.heading}
-          para={errormessage.para}
-          btntext={errormessage.btntext}
-        />
-      ) : (
-        ""
-      )}
-      <div style={{ width: "100%", height: "100%", display: "flex" }}>
-        {isable && !isValid ? (
-          <Authbox
-            userid={userid}
-            programid={programid}
-            setisValid={setisValid}
-            setcontent={setcontent}
-          />
-        ) : (
-          <>
+      {isable ? (
+        isValid ? (
+          <div style={{ width: "100%", height: "100%", display: "flex" }}>
             <div style={{ flex: "1" }} className="resizable-container">
               <div className="inner-navbar">
                 <span>
@@ -346,115 +295,140 @@ const LiveEditor = () => {
                   <strong style={{ color: "tomato" }}>code_EDITOR</strong>
                 </span>
                 <ul className="inner-nav-list">
-                  {/* <img src={burgerimage} alt="Icon" width="20" height="20"> */}
+                  <button
+                    className="run-button"
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      setisviewoutput(true);
+                      setoutput('');
+                      if (!language || !content) {
+                        alert(
+                          "please select language or check your content not be empty"
+                        );
+                        return;
+                      }
+                      setisrunning(true);
+                      const response = await program.getoutput(
+                        "/output",
+                        content,
+                        langCode,
+                        input
+                      );
+                      if (response.success) {
+                        const string = `${response.data.compile_output || ""}${
+                          response.data.stdout || ""
+                        }`;
+                        setoutput(string);
+                        setisrunning(false);
+                        return;
+                      }
+                      setisrunning(false);
+                    }}
+                  >
+                    run
+                  </button>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={(e) => {
+                        setisChecked(e.target.checked);
 
-                  <li
+                        if (e.target.checked) {
+                          socket.emit("join-room", { programid, name });
+                        } else {
+                          socket.emit("leave-room", programid);
+                        }
+                      }}
+                    />
+                    <span className="slider round"></span>
+                  </label>
+                  <select
+                    id="coding-languages"
+                    value={language}
+                    onChange={handleselectchange}
+                  >
+                    {languages.map((val, index) => (
+                      <option
+                        key={index}
+                        value={val.name}
+                        data-defaultcode={val.defaultCode}
+                        data-lang_code={val.id}
+                      >
+                        {val.name}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    id="coding-themes"
+                    value={theme}
+                    onChange={(e) => {
+                      const selectedTheme = e.target.value;
+                      localStorage.setItem("theme", selectedTheme);
+                      settheme(selectedTheme);
+                    }}
+                  >
+                    {monaceThemes.map((val, index) => (
+                      <option key={index} value={val.name}>
+                        {val.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div
                     style={{
                       display: "flex",
-                      alignItems: "center",
-                      borderRadius: "4px",
-                      // background:"grey",
-                      width: "320px",
+                      width: "65px",
                       justifyContent: "space-between",
                     }}
                   >
-                    <select
-                      id="coding-languages"
-                      value={language}
-                      onChange={handleselectchange}
-                    >
-                      {languages.map((val, index) => (
-                        <option
-                          key={index}
-                          value={val.name}
-                          data-defaultcode={val.defaultCode}
-                          data-lang_code={val.id}
-                        >
-                          {val.name}
-                        </option>
-                      ))}
-                    </select>
-                    <select
-                      id="coding-languages"
-                      value={theme}
-                      onChange={(e) => {
-                        const selectedTheme = e.target.value;
-                        localStorage.setItem("theme", selectedTheme);
-                        settheme(selectedTheme);
-                      }}
-                    >
-                      {monaceThemes.map((val, index) => (
-                        <option key={index} value={val.name}>
-                          {val.name}
-                        </option>
-                      ))}
-                    </select>
-                    <div
+                    <button
+                      title="input terminal"
                       style={{
-                        display: "flex",
-                        width: "65px",
-                        justifyContent: "space-between",
+                        padding: "3px",
+                        borderRadius: "5px",
+                        cursor: "pointer",
                       }}
+                      onClick={() => setisviewinput(!isviewinput)}
                     >
-                      <button
-                        title="input terminal"
-                        style={{
-                          padding: "3px",
-                          borderRadius: "5px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => setisviewinput(!isviewinput)}
-                      >
-                        &gt;_i
-                      </button>
-                      <button
-                        title="output terminal"
-                        style={{
-                          padding: "3px",
-                          borderRadius: "5px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => setisviewoutput(!isviewoutput)}
-                      >
-                        &lt;_o
-                      </button>
-                    </div>
-                  </li>
-                  {/* <li style={{ alignSelf: "flex-end" }} onClick={handleBurgerClick}>
-              <img src={burgerimage} alt="imag" width="25px" />
-            </li>
-            <DropdownMenu
-              isVisible={isMenuVisible}
-              position={menuPosition}
-              language={language}
-              onClose={() => setIsMenuVisible(false)}
-            /> */}
+                      &gt;_i
+                    </button>
+                    <button
+                      title="output terminal"
+                      style={{
+                        padding: "3px",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => setisviewoutput(!isviewoutput)}
+                    >
+                      &lt;_o
+                    </button>
+                  </div>
                 </ul>
               </div>
               {isviewinput && (
-                <InputBox heading={"Input Box"} value={"give input here"} />
+                <InputBox
+                  heading={"Input Box"}
+                  value={""}
+                  setinput={setinput}
+                />
               )}
               {isviewoutput && (
-                <InputBox heading={"Output Box"} value={output} />
+                <InputBox heading={"Output Box"} value={output} isrunning={isrunning} />
               )}
               <div
                 style={{
                   width: "100%",
                   height: "100%",
-                  // height: "400px",
                   border: "1px solid black",
                 }}
               >
                 <Editor
-                  // style={{
-                  //   flex: "1",
-                  // }}
-                  // value={content}
                   height="100%"
                   width="100%"
                   onChange={(value) => {
                     setcontent(value);
-                    socket.emit('send-text',({value,programid}))
+                    socket.emit("send-text", { value, programid });
                   }}
                   options={editorOptions}
                   value={content}
@@ -463,39 +437,34 @@ const LiveEditor = () => {
                   defaultLanguage={language}
                 />
               </div>
-              <button
-                className="run-button"
-                onClick={async (e) => {
-                  e.preventDefault();
-                  if (!language || !content) {
-                    alert(
-                      "please select language or check your content not be empty"
-                    );
-                    return;
-                  }
-                  setisrunning(true);
-                  const response = await program.getoutput(
-                    "/output",
-                    content,
-                    langCode,
-                    input
-                  );
-                  // if (response.success) {
-                  console.log("output Response:", response.data);
-                  setoutput(response.data.output);
-                  setisrunning(false);
-
-                  // }
-                }}
-              >
-                run code
-              </button>
             </div>
-          </>
-        )}
-      </div>
+          </div>
+        ) : (
+          <Authbox
+            programid={programid}
+            setisValid={setisValid}
+            setcontent={setcontent}
+            setname={setname}
+          />
+        )
+      ) : (
+        <NotificationBox
+          heading={errormessage.heading}
+          para={errormessage.para}
+          btntext={errormessage.btntext}
+        />
+      )}
     </>
   );
+};
+const styles = {
+  loaderContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    width: "100%",
+  },
 };
 
 export default LiveEditor;

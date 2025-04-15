@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState ,useRef,useContext} from "react";
+import { StateContext } from "../Context/usecontext";
 import userControllers from "../Controllers/user";
 import "../Styles/AuthForm.css";
 import { useNavigate } from "react-router-dom";
-// import { json } from "body-parser";
 
 export default function AuthForm() {
+  const {settoken} = useContext(StateContext)
   const tempdata = JSON.parse(localStorage.getItem("tempdata")) || null;
   const [isauto, setisauto] = useState(false);
   const [isAutomation, setIsAutomation] = useState(
@@ -25,7 +26,6 @@ export default function AuthForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("data", data);
     if (islogin) {
       const result = await userControllers.loginuser("/log-in", {
         email: data.email,
@@ -33,11 +33,8 @@ export default function AuthForm() {
       });
 
       if (result.success) {
-        console.log("result", result);
-        const data = { token: result.token, user: result.user };
-        // localStorage.setItem('data',JSON.stringify(data))
         localStorage.setItem("token", result.token);
-        console.log(localStorage);
+        settoken(result.token)
         localStorage.setItem(
           "tempdata",
           JSON.stringify({
@@ -45,8 +42,9 @@ export default function AuthForm() {
             password: result.user.Password,
           })
         );
+        localStorage.setItem('user',JSON.stringify(result.user));
 
-        navigate(`/editor/${result.user._id}`, { state: result.user });
+        navigate(`/editor/${result.token}`, { state: result.user });
         return;
       }
       seterror(result.message);
@@ -59,7 +57,6 @@ export default function AuthForm() {
     }
     const result = await userControllers.createuser("/sign-up", data);
     if (result.success) {
-      console.log("result", result);
       localStorage.setItem(
         "tempdata",
         JSON.stringify({
@@ -67,8 +64,12 @@ export default function AuthForm() {
           password: result.user.Password,
         })
       );
+      localStorage.removeItem('theme')
+      localStorage.removeItem('lastfile')
+      localStorage.removeItem('lastcode')
+      localStorage.removeItem('language')
       alert("sign up successfully please go to login");
-      // navigate(`/editor/${result.user._id}`, { state: result.user });
+      navigate(`/editor/${result.token}`, { state: result.user });
       return;
     }
     seterror(result.message);
@@ -178,7 +179,7 @@ export default function AuthForm() {
             className="input"
             onChange={(e) => {
               setdata({ ...data, password: e.target.value });
-              if (!isAutomation) return;
+              if (!islogin || !isAutomation) return;
               let pass = e.target.value;
               if (
                 (pass.length === 6 ||

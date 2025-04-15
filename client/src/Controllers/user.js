@@ -10,7 +10,6 @@ const createuser = async (route,data) => {
       Email: data.email,
       Password: data.password,
     }
-    console.log("apiFrndlyData:",apiFrndlyData)
     const response = await apiRequest("post", `${BASE_URL}${route}`, apiFrndlyData);
     return response;
     
@@ -27,7 +26,6 @@ const loginuser = async (route,data) => {
       Email: data.email,
       Password: data.password,
     }
-    console.log("apiFrndlyData:",apiFrndlyData)
     const response = await apiRequest("post", `${BASE_URL}${route}`, apiFrndlyData);
     return response;
 

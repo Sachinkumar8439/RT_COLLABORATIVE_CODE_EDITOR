@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { StateContext } from "../Context/usecontext";
-import CodingSection from "./Codingsection";
+import { Codingsection} from "./Codingsection";
 import InputSection from "./Inputsection";
 import OutputSection from "./Outputsection";
 import "../Styles/Maineditor.css";
@@ -14,22 +14,10 @@ const Maineditor = () => {
   
   const socket = useSocket();
 
-  // useEffect(() => {
-  //   console.log("socket wokrs here");
-  //   socket.on("load-updated-content", (data) => {
-  //     console.log("run loading", data);
-  //   });
-
-  //   localStorage.removeItem('token');
-
-  //   return () => {
-  //     socket.off("use me");
-  //   };
-  // }, [socket]);
 
   return (
     <div className="main-editor">
-      <CodingSection socket={socket} user={user} />
+      <Codingsection socket={socket} user={user} />
       <div className="input-output-container">
         <InputSection />
         <OutputSection data={{ output, setoutput }} />

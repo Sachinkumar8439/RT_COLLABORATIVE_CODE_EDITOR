@@ -1,4 +1,17 @@
 import Swal from "sweetalert2";
+
+const checkOnlineStatus = async () => {
+  try {
+    const response = await fetch('https://www.google.com/', {
+      method: 'HEAD',
+      mode: 'no-cors',
+    });
+    return true; // Online
+  } catch {
+    return false; // Offline
+  }
+};
+
 const apiRequest = async (method = 'GET', URL, body = null, headers = {}) => {
     try {
       const defaultHeaders = {
@@ -16,13 +29,39 @@ const apiRequest = async (method = 'GET', URL, body = null, headers = {}) => {
       if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method.toUpperCase()) && body) {
         options.body = JSON.stringify(body); 
       }
-  
-      
+     const isonline = await checkOnlineStatus()
+      if(!isonline)
+      {
+        console.log("i am offline now");
+        Swal.fire({
+          icon: "error",
+          title: "Oops... you are Offline",
+          text: "check your internet connection!",
+          confirmButtonText: "okay",
+          confirmButtonColor: "#ff4b5c",
+          background: "#fff",
+          color: "#333",
+          width: "400px",
+          padding: "20px",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+          hideClass: {
+            popup: "animate__animated animate__fadeOutUp",
+          },
+          customClass: {
+            popup: "rounded-xl shadow-lg",
+            title: "text-red-600 text-2xl font-bold",
+            confirmButton: "bg-red-500 text-white rounded-full px-6 py-2 text-lg",
+          },
+        });
+
+        return {success:false ,message:'you are offline'}
+      }
       const response = await fetch(URL, options);
   
       if (!response.ok) {
         if (response.status === 404) {
-          // Show a popup if the server returns a 404 error
           Swal.fire({
             icon: "error",
             title: "Oops...",
@@ -46,9 +85,7 @@ const apiRequest = async (method = 'GET', URL, body = null, headers = {}) => {
             },
           });
         }
-        // throw new Error(
-        //   `HTTP Error: ${response.status} ${response.statusText} at ${URL}`
-        // );
+
       }
       const data = await response.json();
       return data; 

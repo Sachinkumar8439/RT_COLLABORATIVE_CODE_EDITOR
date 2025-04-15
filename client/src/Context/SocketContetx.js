@@ -4,8 +4,8 @@ import { io } from "socket.io-client";
 
 const URL = "http://localhost:4000"; 
 const socket = io(URL, {
-  // autoConnect: false, 
-  // reconnectionAttempts: 5, 
+  autoConnect: false, 
+  reconnectionAttempts: 5, 
 });
 
 const SocketContext = createContext();

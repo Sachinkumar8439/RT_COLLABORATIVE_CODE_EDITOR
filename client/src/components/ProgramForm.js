@@ -21,7 +21,6 @@ useEffect(()=>{
             const matchedLang = monacoFormatLang.find(val => val.extension === extention[1]);
             if(matchedLang && matchedLang.extension !== '')
                 {
-                console.log("matchlang",matchedLang)
                 seticon(matchedLang.iconUrl);
                 return;
             }
@@ -32,7 +31,6 @@ useEffect(()=>{
 
 
         }
-        console.log("namechanges");
     }
 
 },[programName]);
@@ -92,9 +90,9 @@ const styles = {
   },
   modal: {
     display: "flex",
-    flexDirection: "column", // Fixed typo
-    alignItems: "center", // Centers children horizontally
-    justifyContent: "center", // Centers children vertically
+    flexDirection: "column", 
+    alignItems: "center", 
+    justifyContent: "center", 
     backgroundColor: "rgb(5, 55, 75)",
     padding: "20px",
     borderRadius: "10px",
