@@ -6,9 +6,9 @@ const checkOnlineStatus = async () => {
       method: 'HEAD',
       mode: 'no-cors',
     });
-    return true; // Online
+    return true;
   } catch {
-    return false; // Offline
+    return false; 
   }
 };
 
