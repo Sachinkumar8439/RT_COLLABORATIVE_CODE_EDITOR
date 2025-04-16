@@ -9,9 +9,9 @@ A powerful, feature-rich real-time code editor designed for developers who love 
 
 ## 🧑‍💻 Developers  
 
-**Frontend**: *Sachin Kumar*  [LinkedIn](https://www.linkedin.com/in/sachin-kumar)  [Portfolio](https://sachin-kumar-portfolio.com)  [GitHub](https://github.com/sachin-kumar)  [Other Link](https://example.com)
+**Frontend**: *Sachin Kumar*  [LinkedIn](https://www.linkedin.com/in/sachin-kumar-614372259/)  [Portfolio](https://sachin-kumar-portfolio.com)
 
-**Backend**: *Lovekush Singh*  [LinkedIn](https://www.linkedin.com/in/lovekush-singh)  [GitHub](https://github.com/lovekush-singh)  [Other Link](https://example.com)
+**Backend**: *Lovekush Singh*  [LinkedIn](https://www.linkedin.com/in/lovekush-singh)  [GitHub](https://github.com/lovekush-singh)
 
 ---
 
