@@ -45,6 +45,18 @@ A powerful, feature-rich real-time code editor designed for developers who love 
     <img src="https://github.com/user-attachments/assets/2169b6f1-6eb5-4d8d-ba52-2e52f522cffb" alt="Image 22" style="width: 30%; height: auto; border-radius: 8px;">
     <img src="https://github.com/user-attachments/assets/24200b0c-77af-4a12-b25f-86440fddafa2" alt="Image 23" style="width: 30%; height: auto; border-radius: 8px;">
     <img src="https://github.com/user-attachments/assets/eabe161f-7e33-4185-9b21-2915389983de" alt="Image 24" style="width: 30%; height: auto; border-radius: 8px;">
+    <img src="https://github.com/user-attachments/assets/6b43b6cb-ca23-4cb1-bbe7-86d0fc9e6ec1" alt="Image 1" style="width: 30%; height: auto; border-radius: 8px;">
+<img src="https://github.com/user-attachments/assets/cba90a36-9f91-4001-9e1a-f122e14b486e" alt="Image 2" style="width: 30%; height: auto; border-radius: 8px;">
+<img src="https://github.com/user-attachments/assets/2b5517b6-cf13-451f-bdc3-cba5cd02ccb1" alt="Image 3" style="width: 30%; height: auto; border-radius: 8px;">
+<img src="https://github.com/user-attachments/assets/70c11af8-6280-49c9-b431-8883f8fe3e15" alt="Image 4" style="width: 30%; height: auto; border-radius: 8px;">
+<img src="https://github.com/user-attachments/assets/8a2aba37-197c-4e42-b04c-9ee4d3ed1871" alt="Image 5" style="width: 30%; height: auto; border-radius: 8px;">
+<img src="https://github.com/user-attachments/assets/e423afc4-99bc-4cf2-930f-daa222f8d009" alt="Image 6" style="width: 30%; height: auto; border-radius: 8px;">
+<img src="https://github.com/user-attachments/assets/f7110d1d-0404-441c-a489-7a54435e4bfb" alt="Image 7" style="width: 30%; height: auto; border-radius: 8px;">
+<img src="https://github.com/user-attachments/assets/1dd709c1-cbd3-4889-9710-c15df3a1124a" alt="Image 8" style="width: 30%; height: auto; border-radius: 8px;">
+<img src="https://github.com/user-attachments/assets/083ae304-78b4-40f3-87fd-2d081901a96b" alt="Image 9" style="width: 30%; height: auto; border-radius: 8px;">
+<img src="https://github.com/user-attachments/assets/c869f3c0-8d2b-49e1-966d-b8ad9d9cbb2e" alt="Image 10" style="width: 30%; height: auto; border-radius: 8px;">
+<img src="https://github.com/user-attachments/assets/893f3a39-f1cc-4e1f-a495-1843535fcbc6" alt="Image 11" style="width: 30%; height: auto; border-radius: 8px;">
+
 </div>
 
 
