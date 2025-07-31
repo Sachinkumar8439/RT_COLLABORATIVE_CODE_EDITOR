@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const URL = "http://localhost:4000"; 
+const URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000"; 
 const socket = io(URL, {
   autoConnect: false, 
   reconnectionAttempts: 5, 
