@@ -195,10 +195,11 @@ const handlecreatefile = async(programname)=>{
       {!isrunning ? (
           <p
             style={{
-              padding: "2px",
+              // padding: "2px",
               fontSize: "15px",
               whiteSpace: "pre-wrap",
               fontFamily: "monospace",
+              background:data.output?.status.description !== "Accepted" ? "red":"",
             }}
           >
             {

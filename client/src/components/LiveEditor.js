@@ -42,6 +42,7 @@ const InputBox = ({ heading, value, setinput ,isrunning }) => {
           border: "1px solid grey",
           color: "white",
           display: "flex",
+          overflow:"auto",
           flexDirection: "column",
         }}
       >
@@ -89,7 +90,7 @@ const InputBox = ({ heading, value, setinput ,isrunning }) => {
   );
 };
 
-const Authbox = ({ setname, programid, setisValid, setcontent }) => {
+const Authbox = ({ setname, programid, setisValid, setcontent ,setlanguage,setLangCode}) => {
   const [error, seterror] = useState("");
   const [data, setdata] = useState({
     userName: "",
@@ -107,10 +108,15 @@ const Authbox = ({ setname, programid, setisValid, setcontent }) => {
     );
     if (response.success) {
       setcontent(response.data.code);
+      const lang = monacoFormatLang.find(val=>(val.extension === response.data.extension));
+      if(!lang) alert("the extention of this file not allowed")
+      setlanguage(lang.name)
       const existingData = JSON.parse(sessionStorage.getItem(programid)) || {};
       existingData.isValid = true;
       existingData.content = response.data.code;
       existingData.name = data.userName;
+      existingData.language = lang;
+      setLangCode(lang.id)
       sessionStorage.setItem(programid, JSON.stringify(existingData));
       setname(data.userName);
       setisValid(true);
@@ -163,8 +169,8 @@ const LiveEditor = () => {
   const { userid, programid } = useParams();
   const [extime, setextime] = useState(null);
   const savedData = sessionStorage.getItem(programid);
-  const [name, setname] = useState("");
   const parsedData = savedData ? JSON.parse(savedData) : {};
+  const [name, setname] = useState(parsedData.name || "");
   const [errormessage, seterrormessage] = useState({
     heading: "Validating ",
     para: "checking of your link",
@@ -183,11 +189,11 @@ const LiveEditor = () => {
   const [isviewoutput, setisviewoutput] = useState(false);
   const [output, setoutput] = useState("output will be shown here");
   const [theme, settheme] = useState(localStorage.getItem("theme") || "vs");
-  const [language, setlanguage] = useState();
+  const [language, setlanguage] = useState(parsedData.language?.name || "");
 
   const [languages, setlanguages] = useState(monacoFormatLang);
 
-  const [langCode, setLangCode] = useState(0);
+  const [langCode, setLangCode] = useState(parsedData.language?.id || 0);
 
 
   const handleselectchange = (e) => {
@@ -441,6 +447,8 @@ const LiveEditor = () => {
           </div>
         ) : (
           <Authbox
+          setLangCode={setLangCode}
+          setlanguage={setlanguage}
             programid={programid}
             setisValid={setisValid}
             setcontent={setcontent}

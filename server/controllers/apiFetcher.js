@@ -1,19 +1,20 @@
 const axios = require("axios");
+require("dotenv").config();
 exports.CodeOutput = async(req,res)=>{
    try{
         const {program,langCode,userStdin=''} = req.body;
 
         const options = {
             method: 'POST',
-            url: 'https://judge0-ce.p.rapidapi.com/submissions',
+            url: process.env.RAPIDAPI_URL || 'https://judge0-ce.p.rapidapi.com/submissions',
             params: {
               base64_encoded: 'false',
               wait: 'false',
               fields: '*'
             },
             headers:{
-              'x-rapidapi-key': '391a15ac0fmsh6a850533304fb89p1463afjsn2e6e511c55c3',
-              'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
+              'x-rapidapi-key':  process.env.RAPIDAPI_KEY ,
+              'x-rapidapi-host': process.env.RAPIDAPI_HOST ,
               'Content-Type': 'application/json'
             },
             data: {
@@ -28,14 +29,14 @@ exports.CodeOutput = async(req,res)=>{
             const response = await axios.request(options);
             const options2 = {
               method: 'GET',
-              url: `https://judge0-ce.p.rapidapi.com/submissions/${response.data.token}`,
+              url: `${process.env.RAPIDAPI_URL}/${response.data.token}`,
               params: {
                 base64_encoded: 'false',
                 fields: '*'
               },
               headers: {
-                'x-rapidapi-key': '391a15ac0fmsh6a850533304fb89p1463afjsn2e6e511c55c3',
-                'x-rapidapi-host': 'judge0-ce.p.rapidapi.com'
+              'x-rapidapi-key':  process.env.RAPIDAPI_KEY ,
+              'x-rapidapi-host': process.env.RAPIDAPI_HOST,
               }
             };
 
@@ -77,8 +78,8 @@ exports.getLanguages=async(req,res) =>{
       method: 'GET',
       url: 'https://judge0-ce.p.rapidapi.com/languages',
       headers: {
-        'x-rapidapi-key': '391a15ac0fmsh6a850533304fb89p1463afjsn2e6e511c55c3',
-        'x-rapidapi-host': 'judge0-ce.p.rapidapi.com'
+        'x-rapidapi-key':  process.env.RAPIDAPI_KEY ,
+        'x-rapidapi-host': process.env.RAPIDAPI_HOST,
       }
     };
     

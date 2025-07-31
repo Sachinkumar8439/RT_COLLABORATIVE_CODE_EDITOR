@@ -35,13 +35,6 @@ export default function AuthForm() {
       if (result.success) {
         localStorage.setItem("token", result.token);
         settoken(result.token)
-        localStorage.setItem(
-          "tempdata",
-          JSON.stringify({
-            email: result.user.Email,
-            password: result.user.Password,
-          })
-        );
         localStorage.setItem('user',JSON.stringify(result.user));
 
         navigate(`/editor/${result.token}`, { state: result.user });
@@ -57,17 +50,7 @@ export default function AuthForm() {
     }
     const result = await userControllers.createuser("/sign-up", data);
     if (result.success) {
-      localStorage.setItem(
-        "tempdata",
-        JSON.stringify({
-          email: result.user.Email,
-          password: result.user.Password,
-        })
-      );
-      localStorage.removeItem('theme')
-      localStorage.removeItem('lastfile')
-      localStorage.removeItem('lastcode')
-      localStorage.removeItem('language')
+      localStorage.clear();
       alert("sign up successfully please go to login");
       navigate(`/editor/${result.token}`, { state: result.user });
       return;
@@ -183,9 +166,9 @@ export default function AuthForm() {
               let pass = e.target.value;
               if (
                 (pass.length === 6 ||
-                  pass.length === tempdata.password.length) &&
+                  pass.length === tempdata?.password.length) &&
                 tempdata &&
-                pass === tempdata.password.substring(0, pass.length)
+                pass === tempdata?.password.substring(0, pass.length)
               ) {
                 setdata({
                   ...data,

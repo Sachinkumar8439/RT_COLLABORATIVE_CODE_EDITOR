@@ -1,5 +1,6 @@
 const User = require("../Modes/User");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 exports.SignUp = async(req,res) =>{
     try{
@@ -80,7 +81,7 @@ exports.LogIn = async(req,res) =>{
             id:isUserExist._id,
         }
 
-        const token = jwt.sign(payload,"Lovekush_Sachin",{
+        const token = jwt.sign(payload,process.env.JWT_SECRET,{
             expiresIn:"5h"
         });
         const user = {...isUserExist._doc,token:token};

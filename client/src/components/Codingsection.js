@@ -27,7 +27,7 @@ export const Codingsection = ({ user }) => {
 
   // main state variables
 
-  const [theme, settheme] = useState(localStorage.getItem("theme") || "vs");
+  const [theme, settheme] = useState(localStorage.getItem("theme") || "vs-dark");
   const [language, setlanguage] = useState(
     match ? match.name : monacoFormatLang[0].name
   );
@@ -136,7 +136,7 @@ export const Codingsection = ({ user }) => {
     if (!content || content.trim() === "") {
       setcontent(selectedLang.defaultCode);
       currentfile.code = selectedLang.defaultCode;
-      localStorage.setItem("lastfile", JSON.stringify(currentfile));
+      // localStorage.setItem("lastfile", JSON.stringify(currentfile));
     }
   };
 
@@ -154,10 +154,8 @@ export const Codingsection = ({ user }) => {
         result.message !== "All Files Fetched Successfully" &&
         result.message !== "you are offline"
       ) {
-        localStorage.removeItem("token");
         settoken(null);
-        localStorage.removeItem(lastfile);
-        localStorage.removeItem("lastcode");
+        localStorage.clear();
         window.location.href = "/notice";
       }
     }

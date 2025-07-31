@@ -200,12 +200,9 @@ const DropdownMenu = ({
             margin: "5px",
           }}
           onClick={(e) => {
-            
             e.preventDefault();
-            localStorage.removeItem("token");
-            localStorage.removeItem("lastfile");
-            localStorage.removeItem("lastcode");
-            console.log(localStorage)
+            localStorage.clear();
+            sessionStorage.clear()
             settoken(null);
             navigate("/");
           }}
