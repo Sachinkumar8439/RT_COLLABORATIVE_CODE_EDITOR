@@ -1,8 +1,4 @@
-.App{
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-}
+
 .right-to-left-auth{
     transform: translate(100%);
     transition: transform 1s ease;
