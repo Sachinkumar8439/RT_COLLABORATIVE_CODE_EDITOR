@@ -15,12 +15,14 @@ const match =
     (val) => val.extension === (lastfile && lastfile.extension)
   ) || null;
 
-export const Codingsection = ({ user }) => {
+export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
   const [token, settoken] = useState(localStorage.getItem("token"));
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleOpenPopup = () => setIsPopupOpen(true);
-  const handleClosePopup = () => setIsPopupOpen(false);
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+  }
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
@@ -42,6 +44,13 @@ export const Codingsection = ({ user }) => {
     useContext(StateContext);
   const [content, setcontent] = useState(currentfile ? currentfile.code : "");
   const fileref = useRef(null);
+  const htmlref = useRef(null);
+
+  useEffect(()=>{
+    if(currentfile?.extention === "html"){
+      sethtmlcode(currentfile.code);
+    }
+  },[content,currentfile])
 
   const handleBurgerClick = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -68,6 +77,9 @@ export const Codingsection = ({ user }) => {
             f._id === currentfile._id ? { ...f, code: value } : f
           )
       );
+      if(language === "html") {
+        sethtmlcode(value);
+      }
       const response = await program.saveProgram(
         "/code-save",
         token,
@@ -98,10 +110,18 @@ export const Codingsection = ({ user }) => {
   }, [socket, currentfile]);
 
   const handleSubmit = async (programname) => {
-    setIsPopupOpen(false);
     if (programname) {
-      const filename = programname.split(".");
+      const ispresent = files.some(pre=>(`${pre.fileName}.${pre.extension}` === programname.trim()));
+      if(ispresent){
+        return {success:false,message:"Similar File exists. give a Unique Name"}
+      }
+      const filename = programname.trim().split(".");
       if (filename && filename.length === 2 && token) {
+       const isvalidextention =  languages.some(lng=>(lng.extension === filename[1]))
+       if(!isvalidextention){
+        return{success:false,message:"Extention Not Allowed"}
+       }
+        setIsPopupOpen(false);
         const response = await program.saveProgram(
           "/code-save",
           token,
@@ -109,7 +129,8 @@ export const Codingsection = ({ user }) => {
           filename[1],
           "",
           null
-        );
+        )
+       
 
         if (response.success) {
           setcurrentfile(response.file);
@@ -117,7 +138,10 @@ export const Codingsection = ({ user }) => {
           setfiles((pre) => [response.file, ...pre]);
         }
       }
-      return;
+      else{
+        return {success:false,message:"Name Without Extention Not Allowed. Follows [Name].[Extention]"}
+      }
+      return {success:true};
     }
   };
 
@@ -148,6 +172,9 @@ export const Codingsection = ({ user }) => {
 
         if (!currentfile) return;
         handlewriting(currentfile.code);
+        if(currentfile.extension === "html"){
+          sethtmlcode(currentfile.code)
+        }
       }
     } else {
       if (
@@ -162,14 +189,26 @@ export const Codingsection = ({ user }) => {
   };
 
   useEffect(() => {
+    fetchfiles();
+    return () => {};
+  }, []);
+  
+
+  useEffect(() => {
     if (currentfile) {
       const matched = monacoFormatLang.find(
         (val) => val.extension === currentfile.extension
       );
+      if(currentfile.extension === "html"){
+        sethtmlcode(currentfile.code)
+      }
 
       if (matched) {
         if (currentfile.code.trim() === "") {
           setcontent(matched.defaultCode);
+          if(matched.extension === "html"){
+            sethtmlcode(matched.defaultCode);
+          }
           setcurrentfile({
             ...currentfile,
             code: matched.defaultCode,
@@ -184,10 +223,6 @@ export const Codingsection = ({ user }) => {
     }
   }, [currentfile, setcurrentfile]);
 
-  useEffect(() => {
-    fetchfiles();
-    return () => {};
-  }, []);
 
   return (
     <div className="resizable-container">
@@ -206,6 +241,13 @@ export const Codingsection = ({ user }) => {
             className="run-button"
             onClick={async (e) => {
               e.preventDefault();
+              if(language === 'html'){
+                console.log("running html file");
+                setShowPreview(true);
+                return
+              }
+              setShowPreview(false);
+
               if (!language || content.trim() === "" || !currentfile) {
                 alert(
                   "please select file or check your content should not be empty"
@@ -284,7 +326,7 @@ export const Codingsection = ({ user }) => {
             ))}
           </select>
           <li onClick={handleBurgerClick}>
-            <img src={burgerimage} alt="imag" width="25px" />
+            <img style={{cursor:"pointer"}} src={burgerimage} alt="imag" width="25px" />
           </li>
 
           <DropdownMenu

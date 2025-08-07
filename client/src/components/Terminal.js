@@ -28,15 +28,7 @@ const Terminal = ({data,isrunning,setisrunning}) => {
     setcurrentfile(matchedFile);
 };
 
-useEffect(()=>{
-  if(currentfile)
-  {
-    setlog(`you are in ${currentfile.fileName}.${currentfile.extension} file`)
 
-
-  }
-
-},[currentfile])
 const handlecopy = async (type)=>{
   if(type === 'link')
   {
@@ -190,7 +182,7 @@ const handlecreatefile = async(programname)=>{
   
 
   return (
-    <div style={{width:'100%',display:'flex',flexDirection:'column',position:"relative"}}>
+    <div style={{width:'100%',display:'flex',flexDirection:'column',position:"relative",overflow:"auto"}}>
       <div style={{height : isrunning?'40px':''}} >
       {!isrunning ? (
           <p

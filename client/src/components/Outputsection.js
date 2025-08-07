@@ -5,8 +5,8 @@ import Terminal from "./Terminal";
 const Outputsection = ({ data }) => {
   const { isrunning ,setisrunning} = useContext(StateContext);
   return (
-    <div  className="outputsection-container">
-      <div style={{overflowY:'scroll'}} className="output-content content-area">
+    <div className="outputsection-container">
+      <div style={{overflowY:'auto'}} className="output-content content-area">
         <Terminal data={data} isrunning={isrunning} setisrunning={setisrunning}/>
       </div>
     </div>

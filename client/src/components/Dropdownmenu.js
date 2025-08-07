@@ -134,6 +134,7 @@ const DropdownMenu = ({
           zIndex: 1000,
           width: "180px",
           maxHeight: "400px",
+          overflow:"auto"
           // color:'white',
         }}
       >
@@ -172,6 +173,7 @@ const DropdownMenu = ({
                   whiteSpace: "nowrap",
                   color: filematch ? "white" : "",
                   background: filematch ? "rgb(7, 61, 87)" : "",
+                  overflow:"hidden",
                 }}
                 onContextMenu={handleRightClick}
                 onClick={(e) => {

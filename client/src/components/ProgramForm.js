@@ -3,6 +3,7 @@ import { monacoFormatLang } from "../data";
 
 const ProgramForm = ({ isOpen, onClose, onSubmit }) => {
   const [programName, setProgramName] = useState("");
+  const [error, seterror] = useState("");
   const inputRef = useRef(null);
   const [icon,seticon] = useState(null)
 
@@ -39,10 +40,14 @@ useEffect(()=>{
 
   return (
     <div style={styles.overlay}>
-      <form onSubmit={(e) => {
+      <form onSubmit={async (e) => {
     
           e.preventDefault(); 
-          onSubmit(programName);
+         const result = await onSubmit(programName);
+         if(!result?.success){
+             seterror(result?.message);
+             return;
+         }
           seticon(null);
         setProgramName('')}} 
           style={styles.modal}>
@@ -61,8 +66,16 @@ useEffect(()=>{
         }}
           style={styles.input}
         />
+        <div style={{marginBottom:"20px",color:"white"}}>{error}</div>
         <div style={styles.buttonContainer}>
-          <button type="button" onClick={onClose} style={styles.cancelButton}>
+          <button type="button" onClick={(e)=>{
+                 e.preventDefault()
+                 onClose();
+                 seterror("")
+                 setProgramName("");
+                 seticon(null);
+
+          }} style={styles.cancelButton}>
             Cancel
           </button>
           <button type="submit" style={styles.submitButton}>
@@ -93,10 +106,10 @@ const styles = {
     flexDirection: "column", 
     alignItems: "center", 
     justifyContent: "center", 
-    backgroundColor: "rgb(5, 55, 75)",
+    backgroundColor: "rgba(19, 24, 26, 1)",
     padding: "20px",
     borderRadius: "10px",
-    boxShadow: "0px 2px 10px 1px rgba(220, 223, 226, 0.1)",
+    boxShadow: "1px 1px 1px 2px rgba(255, 255, 255, 1)",
     textAlign: "center",
     width: "400px",
   },
@@ -111,6 +124,8 @@ const styles = {
     borderRadius: "5px",
     border: "1px solid #ccc",
     fontSize: "16px",
+    background:"none",
+    color:"white"
   },
   buttonContainer: {
     display: "flex",
@@ -118,15 +133,15 @@ const styles = {
     justifyContent: "space-evenly",
   },
   cancelButton: {
-    backgroundColor: "#ccc",
-    color: "#333",
+    backgroundColor: "#b00e0eff",
+    color: "white",
     border: "none",
     padding: "10px 15px",
     borderRadius: "5px",
     cursor: "pointer",
   },
   submitButton: {
-    backgroundColor: "#007BFF",
+    backgroundColor: "#090909ff",
     color: "#fff",
     border: "none",
     padding: "10px 15px",

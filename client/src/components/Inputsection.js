@@ -41,9 +41,17 @@ const Inputsection = () => {
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
-      <div className="input-content content-area">
+      <div style={{overflowY:"auto"}} className="input-content content-area">
         <p
-          style={{ padding: "3px" }}
+          style={{ 
+            
+           padding: "0px 3px",
+    height: "100%",
+    wordBreak: "break-word",     // <-- Ensures long words break
+    overflowWrap: "break-word",  // <-- Legacy support, still useful
+    whiteSpace: "pre-wrap",      // <-- Preserves line breaks and wraps text
+    fontFamily: "monospace",
+          }}
           contentEditable="true"
           data-input={input}
           onInput={inputSetter}
