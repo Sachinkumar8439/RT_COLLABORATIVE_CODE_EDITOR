@@ -82,7 +82,7 @@ exports.LogIn = async(req,res) =>{
         }
 
         const token = jwt.sign(payload,process.env.JWT_SECRET,{
-            expiresIn:"5h"
+            expiresIn:"30d"
         });
         const user = {...isUserExist._doc,token:token};
         // user.token = token;

@@ -181,15 +181,16 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
       for (let i = 0; i < lines.length; i++) {
           setTimeout(() => {
             setcontent(pre=>(pre.trim() +  "\n" + lines[i] ))
-          }, i*80);
+          }, i*40);
       }
       handlewriting(response.code);
-      if(currentfile.extension !== "html") sethtmlcode(response.code);
+      if(currentfile.extension === "html") sethtmlcode(response.code);
+      
+      setprompt("")
     }else{
       alert(response.message)
     }
     setspin(false)
-    setprompt("")
   }
 
   const fetchfiles = async () => {

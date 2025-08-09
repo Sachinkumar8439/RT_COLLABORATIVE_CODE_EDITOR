@@ -14,7 +14,7 @@ export const handleGenerateCode = async (prompt,content) => {
      return {success:false,message:"wait for cool down expire"}
   }
 }
-  if(attempts>19){
+  if(attempts>5){
     const next30Min = Date.now() + (30 * 60 * 1000); 
     localStorage.setItem("cooldownUntil", next30Min.toString());
     return {success:false,message:"your limit exceed wait for 30min"}
@@ -22,10 +22,10 @@ export const handleGenerateCode = async (prompt,content) => {
   if (!prompt.trim()) return;
   console.log(prompt)
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent(
-      `You are a coding assistant. Return only code unless explanation is asked if explanation asked you just comment it like in editor before giving the code. now listen carefully
-       ${prompt} ${content}`
+      `You are a coding assistant. Return only code unless explanation is asked if explanation asked you just comment it like in editor before the code. give code in single file only
+      ${content} ${prompt}`
     );
     attempts++;
     localStorage.setItem("count",attempts)
