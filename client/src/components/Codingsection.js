@@ -7,6 +7,7 @@ import Editor from "@monaco-editor/react";
 import { monacoFormatLang, monaceThemes, editorOptions } from "../data";
 import ProgramForm from "./ProgramForm";
 import { useSocket } from "../Context/SocketContetx";
+import { handleGenerateCode } from "../Controllers/AI";
 
 const lastfile = JSON.parse(localStorage.getItem("lastfile"));
 
@@ -33,11 +34,13 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
   const [language, setlanguage] = useState(
     match ? match.name : monacoFormatLang[0].name
   );
+  const [prompt ,setprompt] = useState("");
   const [langCode, setLangCode] = useState(match ? match.id : 0);
 
   const [isChecked, setisChecked] = useState(false);
 
   const { setoutput, input, setisrunning } = useContext(StateContext);
+  const [spin,setspin] = useState(false);
 
   const [languages, setlanguages] = useState(monacoFormatLang);
   const { currentfile, setcurrentfile, setfiles, files } =
@@ -45,6 +48,9 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
   const [content, setcontent] = useState(currentfile ? currentfile.code : "");
   const fileref = useRef(null);
   const htmlref = useRef(null);
+   const editorRef = useRef(null);
+
+  
 
   useEffect(()=>{
     if(currentfile?.extention === "html"){
@@ -164,6 +170,28 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
     }
   };
 
+  const getaicode = async(e)=>{
+    e.preventDefault()
+    if(!prompt.trim()) return
+    setspin(true)
+    const response = await handleGenerateCode(prompt,content)
+    if(response?.success){
+      const lines = response.code.split("\n");
+      setcontent("");
+      for (let i = 0; i < lines.length; i++) {
+          setTimeout(() => {
+            setcontent(pre=>(pre.trim() +  "\n" + lines[i] ))
+          }, i*80);
+      }
+      handlewriting(response.code);
+      if(currentfile.extension !== "html") sethtmlcode(response.code);
+    }else{
+      alert(response.message)
+    }
+    setspin(false)
+    setprompt("")
+  }
+
   const fetchfiles = async () => {
     const result = await program.loadPrograms("/get-files", token);
     if (result.success) {
@@ -225,7 +253,14 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
 
 
   return (
-    <div className="resizable-container">
+    <div style={{position:"relative"}} className="resizable-container">
+          <div style={{background:"black",padding:"10px",left:"0px",gap:"10px",position:"absolute", bottom:"0px",right:"0px",zIndex:"5000"}}>
+             <form style={{width:"100%",display:"flex",gap:"10px"}} onSubmit={getaicode}> 
+
+            <input placeholder={"genarate by agent"} style={{backgroundColor:"black",padding:"10px 20px",flex:"1",background:"black",color:"white",borderRadius:"20px"}}  type='text' value={prompt} onChange={(e)=>setprompt(e.target.value)} ></input>
+            <button type="submit" style={{width:"40px", height:"40px",borderRadius:"50%",background:"black",color:"white",cursor:"pointer"}}  className={`${spin && "spin"}`}>{spin?"+":"Ai"}</button>
+             </form>
+          </div>
       <ProgramForm
         isOpen={isPopupOpen}
         onClose={handleClosePopup}

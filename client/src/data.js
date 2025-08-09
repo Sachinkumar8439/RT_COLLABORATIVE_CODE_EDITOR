@@ -172,47 +172,47 @@ export const monacoFormatLang = [
 
 
 export const editorOptions = {
-  padding: { top: 5, bottom: 5 }, // Add padding to top and bottom
-  fontSize: 15, // Font size
-  lineHeight: 0, // Line height for better readability
-  minimap: { enabled: false }, // Disable minimap for a cleaner look
+  padding: { top: 10, bottom: 80 }, 
+  fontSize: 15,
+  lineHeight: 0, 
+  minimap: { enabled: false }, 
 
-  // Word Wrapping and Scrolling
-  wordWrap: "on", // Enable word wrapping
-  scrollBeyondLastLine: false, // Prevent scrolling past the last line
-  smoothScrolling: true, // Smooth scrolling for better UX
+
+  wordWrap: "on", 
+  scrollBeyondLastLine: false,
+  smoothScrolling: true, 
 
   // Cursor and Line Highlighting
-  cursorBlinking: "smooth", // Smooth cursor blinking
-  cursorStyle: "line", // Cursor style (block/line/underline)
-  cursorWidth: 1, // Cursor width (for line style)
-  // renderLineHighlight: "all",       // Highlight both gutter and line
-  // renderWhitespace: "boundary",     // Show whitespaces only at boundaries
+  cursorBlinking: "smooth",
+  cursorStyle: "line",
+  cursorWidth: 1, 
+  // renderLineHighlight: "all",       
+  // renderWhitespace: "boundary",    
 
   // Code Folding and Guides
-  folding: true, // Enable code folding
-  foldingHighlight: true, // Highlight folded regions
+  folding: true,
+  foldingHighlight: true, 
   guides: {
-    // indentation: true,              // Indentation guides
-    bracketPairs: true, // Highlight bracket pairs
+    // indentation: true,             
+    bracketPairs: true,
   },
 
   // Suggestion and IntelliSense
-  suggestOnTriggerCharacters: true, // Enable suggestions on typing
+  suggestOnTriggerCharacters: true, 
   quickSuggestions: {
     // Enable quick suggestions
     other: true,
     comments: true,
     strings: true,
   },
-  parameterHints: { enabled: true }, // Enable parameter hints
-  wordBasedSuggestions: true, // Word-based auto-completions
-  acceptSuggestionOnEnter: "on", // Accept suggestion with Enter key
+  parameterHints: { enabled: true }, 
+  wordBasedSuggestions: true, 
+  acceptSuggestionOnEnter: "on", 
 
   // Scrollbar Customization
   scrollbar: {
-    verticalScrollbarSize: 8, // Vertical scrollbar size
-    horizontalScrollbarSize: 8, // Horizontal scrollbar size
+    verticalScrollbarSize: 8, 
+    horizontalScrollbarSize: 8,
   },
 
   // Miscellaneous

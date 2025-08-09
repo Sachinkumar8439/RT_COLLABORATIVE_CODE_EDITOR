@@ -15,7 +15,7 @@ export default function AuthForm() {
   const [error, seterror] = useState("");
   const navigate = useNavigate();
   const formref = useRef(null);
-  const [islogin, setislogin] = useState(false);
+  const [islogin, setislogin] = useState(true);
   const [data, setdata] = useState({
     name: "",
     userName: "",
