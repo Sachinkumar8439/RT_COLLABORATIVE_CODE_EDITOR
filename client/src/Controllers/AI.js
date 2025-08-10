@@ -24,8 +24,8 @@ export const handleGenerateCode = async (prompt,content) => {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent(
-      `You are a coding assistant. Return only code unless explanation is asked if explanation asked you just comment it like in editor before the code. give code in single file only
-      ${content} ${prompt}`
+      `You are a coding assistant. Return only code unless explanation is asked. give code in single file only.
+      ${content} if i talking about above content then remember that if not then follow bellow prompt ${prompt}`
     );
     attempts++;
     localStorage.setItem("count",attempts)
