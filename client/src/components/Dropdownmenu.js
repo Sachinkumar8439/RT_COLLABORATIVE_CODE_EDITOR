@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import program from "../Controllers/program";
 
 const DropdownMenu = ({
+  spin,
   isVisible,
   position,
   onClose,
@@ -150,6 +151,10 @@ const DropdownMenu = ({
           }}
           onClick={(e) => {
             e.preventDefault();
+            if(spin){
+              alert("wait for fullfill of code genration")
+              return
+            }
             handleOpenPopup();
             onClose();
           }}
@@ -178,6 +183,10 @@ const DropdownMenu = ({
                 onContextMenu={handleRightClick}
                 onClick={(e) => {
                   e.preventDefault();
+                  if(spin){
+                    alert("you can not switch file untill code genration in process")
+                    return;
+                  }
                   fileref.current = e.currentTarget;
                   const fileDataString = e.currentTarget.dataset.thisfile;
                   const fileData = JSON.parse(fileDataString);

@@ -1,10 +1,22 @@
 import React, { useState, useEffect, useReducer, useRef, useContext } from "react";
+import { FaExpand, FaCompress } from "react-icons/fa";
+
 import "../Styles/htmlpreview.css";
 import { StateContext } from "../Context/usecontext";
 
 const HtmlPreview = ({ content, visible, onClose }) => {
   const { currentfile, setcurrentfile, setfiles, files } =
   useContext(StateContext);
+  const goFullScreen = () => {
+  const iframe = document.getElementById("iframe");
+  if (iframe.requestFullscreen) {
+    iframe.requestFullscreen();
+  } else if (iframe.webkitRequestFullscreen) {
+    iframe.webkitRequestFullscreen(); 
+  } else if (iframe.msRequestFullscreen) {
+    iframe.msRequestFullscreen(); 
+  }
+};
   
   useEffect(()=>{
     if(currentfile && files && visible===true){
@@ -38,6 +50,7 @@ const HtmlPreview = ({ content, visible, onClose }) => {
         {/* Header */}
         <div className="html-preview-header">
           <h2>HTML Preview</h2>
+          <button onClick={goFullScreen} className="close-btn"><FaExpand/></button>
           <button onClick={onClose} className="close-btn">✕</button>
         </div>
 
@@ -45,9 +58,10 @@ const HtmlPreview = ({ content, visible, onClose }) => {
         <iframe
           title="HTML Preview"
           srcDoc={content}
-          sandbox="allow-scripts allow-same-origin allow-modals"
+          sandbox="allow-scripts allow-same-origin allow-modals allow-forms"
           className="html-preview-iframe"
           id="iframe"
+          allowFullScreen
         ></iframe>
       </div>
   );

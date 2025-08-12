@@ -8,6 +8,7 @@ import { monacoFormatLang, monaceThemes, editorOptions } from "../data";
 import ProgramForm from "./ProgramForm";
 import { useSocket } from "../Context/SocketContetx";
 import { handleGenerateCode } from "../Controllers/AI";
+import { FaTelegram } from "react-icons/fa";
 
 const lastfile = JSON.parse(localStorage.getItem("lastfile"));
 
@@ -16,31 +17,33 @@ const match =
     (val) => val.extension === (lastfile && lastfile.extension)
   ) || null;
 
-export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
+export const Codingsection = ({ user, sethtmlcode, setShowPreview }) => {
   const [token, settoken] = useState(localStorage.getItem("token"));
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleOpenPopup = () => setIsPopupOpen(true);
   const handleClosePopup = () => {
     setIsPopupOpen(false);
-  }
+  };
 
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
   // main state variables
 
-  const [theme, settheme] = useState(localStorage.getItem("theme") || "vs-dark");
+  const [theme, settheme] = useState(
+    localStorage.getItem("theme") || "vs-dark"
+  );
   const [language, setlanguage] = useState(
     match ? match.name : monacoFormatLang[0].name
   );
-  const [prompt ,setprompt] = useState("");
+  const [prompt, setprompt] = useState("");
   const [langCode, setLangCode] = useState(match ? match.id : 0);
 
   const [isChecked, setisChecked] = useState(false);
 
   const { setoutput, input, setisrunning } = useContext(StateContext);
-  const [spin,setspin] = useState(false);
+  const [spin, setspin] = useState(false);
 
   const [languages, setlanguages] = useState(monacoFormatLang);
   const { currentfile, setcurrentfile, setfiles, files } =
@@ -48,15 +51,13 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
   const [content, setcontent] = useState(currentfile ? currentfile.code : "");
   const fileref = useRef(null);
   const htmlref = useRef(null);
-   const editorRef = useRef(null);
+  const editorRef = useRef(null);
 
-  
-
-  useEffect(()=>{
-    if(currentfile?.extention === "html"){
+  useEffect(() => {
+    if (currentfile?.extention === "html") {
       sethtmlcode(currentfile.code);
     }
-  },[content,currentfile])
+  }, [content, currentfile]);
 
   const handleBurgerClick = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -83,7 +84,7 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
             f._id === currentfile._id ? { ...f, code: value } : f
           )
       );
-      if(language === "html") {
+      if (language === "html") {
         sethtmlcode(value);
       }
       const response = await program.saveProgram(
@@ -117,16 +118,23 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
 
   const handleSubmit = async (programname) => {
     if (programname) {
-      const ispresent = files.some(pre=>(`${pre.fileName}.${pre.extension}` === programname.trim()));
-      if(ispresent){
-        return {success:false,message:"Similar File exists. give a Unique Name"}
+      const ispresent = files.some(
+        (pre) => `${pre.fileName}.${pre.extension}` === programname.trim()
+      );
+      if (ispresent) {
+        return {
+          success: false,
+          message: "Similar File exists. give a Unique Name",
+        };
       }
       const filename = programname.trim().split(".");
       if (filename && filename.length === 2 && token) {
-       const isvalidextention =  languages.some(lng=>(lng.extension === filename[1]))
-       if(!isvalidextention){
-        return{success:false,message:"Extention Not Allowed"}
-       }
+        const isvalidextention = languages.some(
+          (lng) => lng.extension === filename[1]
+        );
+        if (!isvalidextention) {
+          return { success: false, message: "Extention Not Allowed" };
+        }
         setIsPopupOpen(false);
         const response = await program.saveProgram(
           "/code-save",
@@ -135,19 +143,21 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
           filename[1],
           "",
           null
-        )
-       
+        );
 
         if (response.success) {
           setcurrentfile(response.file);
 
           setfiles((pre) => [response.file, ...pre]);
         }
+      } else {
+        return {
+          success: false,
+          message:
+            "Name Without Extention Not Allowed. Follows [Name].[Extention]",
+        };
       }
-      else{
-        return {success:false,message:"Name Without Extention Not Allowed. Follows [Name].[Extention]"}
-      }
-      return {success:true};
+      return { success: true };
     }
   };
 
@@ -170,28 +180,29 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
     }
   };
 
-  const getaicode = async(e)=>{
-    e.preventDefault()
-    if(!prompt.trim()) return
-    setspin(true)
-    const response = await handleGenerateCode(prompt,content)
-    if(response?.success){
-      const lines = response.code.split("\n");
-      setcontent("");
-      for (let i = 0; i < lines.length; i++) {
-          setTimeout(() => {
-            setcontent(pre=>(pre.trim() +  "\n" + lines[i] ))
-          }, i*40);
-      }
+  const getaicode = async (e) => {
+    e.preventDefault();
+    if (!prompt.trim()) return;
+    setspin(true);
+    const response = await handleGenerateCode(prompt, content,setcontent);
+    console.log(response);
+    if (response?.success) {
+      // const lines = response.code.split("\n");
+      // setcontent("");
+      // for (let i = 0; i < lines.length; i++) {
+      //   setTimeout(() => {
+      //     setcontent((pre) => pre.trim() + "\n" + lines[i]);
+      //   }, i * 40);
+      // }
       handlewriting(response.code);
-      if(currentfile.extension === "html") sethtmlcode(response.code);
-      
-      setprompt("")
-    }else{
-      alert(response.message)
+      if (currentfile.extension === "html") sethtmlcode(response.code);
+
+      setprompt("");
+    } else {
+      alert(response.message);
     }
-    setspin(false)
-  }
+    setspin(false);
+  };
 
   const fetchfiles = async () => {
     const result = await program.loadPrograms("/get-files", token);
@@ -201,8 +212,8 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
 
         if (!currentfile) return;
         handlewriting(currentfile.code);
-        if(currentfile.extension === "html"){
-          sethtmlcode(currentfile.code)
+        if (currentfile.extension === "html") {
+          sethtmlcode(currentfile.code);
         }
       }
     } else {
@@ -221,21 +232,20 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
     fetchfiles();
     return () => {};
   }, []);
-  
 
   useEffect(() => {
     if (currentfile) {
       const matched = monacoFormatLang.find(
         (val) => val.extension === currentfile.extension
       );
-      if(currentfile.extension === "html"){
-        sethtmlcode(currentfile.code)
+      if (currentfile.extension === "html") {
+        sethtmlcode(currentfile.code);
       }
 
       if (matched) {
         if (currentfile.code.trim() === "") {
           setcontent(matched.defaultCode);
-          if(matched.extension === "html"){
+          if (matched.extension === "html") {
             sethtmlcode(matched.defaultCode);
           }
           setcurrentfile({
@@ -252,17 +262,59 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
     }
   }, [currentfile, setcurrentfile]);
 
-
   return (
-    <div style={{position:"relative"}} className="resizable-container">
-          <div style={{background:"black",padding:"10px",left:"0px",gap:"10px",position:"absolute", bottom:"0px",right:"0px",zIndex:"5000"}}>
-             <form style={{width:"100%",display:"flex",gap:"10px"}} onSubmit={getaicode}> 
-
-            <input placeholder={"genarate by agent"} style={{backgroundColor:"black",padding:"10px 20px",flex:"1",background:"black",color:"white",borderRadius:"20px"}}  type='text' value={prompt} onChange={(e)=>setprompt(e.target.value)} ></input>
-            <button type="submit" style={{width:"40px", height:"40px",borderRadius:"50%",background:"black",color:"white",cursor:"pointer"}}  className={`${spin && "spin"}`}>{spin?"+":"Ai"}</button>
-             </form>
-          </div>
+    <div style={{ position: "relative" }} className="resizable-container">
+      <div
+        style={{
+          background: "black",
+          padding: "10px",
+          left: "0px",
+          gap: "10px",
+          position: "absolute",
+          bottom: "0px",
+          right: "0px",
+          zIndex: "5000",
+        }}
+      >
+        <form
+          style={{ width: "100%", display: "flex", gap: "10px" }}
+          onSubmit={getaicode}
+        >
+          <input
+            placeholder={"genarate by agent"}
+            style={{
+              backgroundColor: "black",
+              padding: "10px 20px",
+              flex: "1",
+              background: "black",
+              color: "white",
+              borderRadius: "20px",
+            }}
+            type="text"
+            value={prompt}
+            onChange={(e) => setprompt(e.target.value)}
+          ></input>
+          <button
+            type="submit"
+            style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              background: "black",
+              color: "white",
+              cursor: "pointer",
+              display: "flex", // Flexbox
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            className={`${spin && "spin"}`}
+          >
+            {spin ? "+" : <FaTelegram style={{ fontSize: "30px" }} />}
+          </button>
+        </form>
+      </div>
       <ProgramForm
+        spin={spin}
         isOpen={isPopupOpen}
         onClose={handleClosePopup}
         onSubmit={handleSubmit}
@@ -277,12 +329,16 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
             className="run-button"
             onClick={async (e) => {
               e.preventDefault();
-              if(language === 'html'){
+              if (language === "html") {
                 console.log("running html file");
                 setShowPreview(true);
-                return
+                return;
               }
               setShowPreview(false);
+              if(spin){
+                alert("wait for Fullfill of code Genaration")
+                return;
+              }
 
               if (!language || content.trim() === "" || !currentfile) {
                 alert(
@@ -362,7 +418,12 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
             ))}
           </select>
           <li onClick={handleBurgerClick}>
-            <img style={{cursor:"pointer"}} src={burgerimage} alt="imag" width="25px" />
+            <img
+              style={{ cursor: "pointer" }}
+              src={burgerimage}
+              alt="imag"
+              width="25px"
+            />
           </li>
 
           <DropdownMenu
@@ -375,6 +436,7 @@ export const Codingsection = ({ user ,sethtmlcode,setShowPreview}) => {
             position={menuPosition}
             onClose={() => setIsMenuVisible(false)}
             setcontent={setcontent}
+            spin={spin}
           />
         </ul>
       </div>
