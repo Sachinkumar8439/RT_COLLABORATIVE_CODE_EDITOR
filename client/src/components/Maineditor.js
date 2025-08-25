@@ -5,17 +5,36 @@ import InputSection from "./Inputsection";
 import OutputSection from "./Outputsection";
 import "../Styles/Maineditor.css";
 import { useSocket } from "../Context/SocketContetx";
-import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import HtmlPreview from "./htmlPreview";
 
+
 const Maineditor = () => {
-  const location = useLocation();
+  const navigate = useNavigate();
   const [htmlcode,sethtmlcode] = useState("")
   const [showPreview, setShowPreview] = useState(false);
-  const [user, setuser] = useState(location.state);
-  const { output, setoutput } = useContext(StateContext);
+  const { output, setoutput, isTokenValid,token,settoken,user,setuser} = useContext(StateContext);
   
   const socket = useSocket();
+
+  const intervel = setInterval(() => {
+    if(!isTokenValid(token)){
+      settoken(null)
+      clearInterval(intervel);
+    }
+  }, 5000);
+  useEffect(()=>{
+      if(!isTokenValid(token)){
+          if(user){
+           localStorage.clear();
+           sessionStorage.clear();
+            setuser(null);
+            navigate("/notice");
+          }
+      }
+      return clearInterval(intervel)
+      
+    },[token])
 
 
   return (

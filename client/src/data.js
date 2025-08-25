@@ -228,11 +228,5 @@ export const monaceThemes = [
   { id: 1, name: "vs" },
   { id: 2, name: "vs-dark" },
   { id: 3, name: "hc-black" },
-  { id: 4, name: "monokai" },
-  { id: 5, name: "solarized-light" },
-  { id: 6, name: "solarized-dark" },
-  { id: 7, name: "github" },
-  { id: 8, name: "dracula" },
-  { id: 9, name: "nord" },
-  { id: 10, name: "night-owl" },
+
 ];

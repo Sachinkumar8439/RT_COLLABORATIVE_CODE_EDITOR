@@ -1,9 +1,10 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 
 export const StateContext = createContext();
 
 export const StateProvider = ({ children }) => {
   const [output, setoutput] = useState(null);
+  const [user, setuser] = useState(JSON.parse(localStorage.getItem("user")) || null);
   const [language, setLanguage] = useState("select language");
   const [input, setInput] = useState("");
   const [isrunning, setisrunning] = useState(false);
@@ -21,10 +22,13 @@ export const StateProvider = ({ children }) => {
     }
     return false;
   };
+  
 
   return (
     <StateContext.Provider
       value={{
+        user,
+        setuser,
         files,
         setfiles,
         token,

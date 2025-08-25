@@ -5,13 +5,12 @@ import "../Styles/AuthForm.css";
 import { useNavigate } from "react-router-dom";
 
 export default function AuthForm() {
-  const {settoken} = useContext(StateContext)
+  const {settoken,setuser} = useContext(StateContext)
   const tempdata = JSON.parse(localStorage.getItem("tempdata")) || null;
   const [isauto, setisauto] = useState(false);
   const [isAutomation, setIsAutomation] = useState(
     JSON.parse(localStorage.getItem("automation")) || false
   );
-  console.log("temp-data", tempdata);
   const [error, seterror] = useState("");
   const navigate = useNavigate();
   const formref = useRef(null);
@@ -35,9 +34,11 @@ export default function AuthForm() {
       if (result.success) {
         localStorage.setItem("token", result.token);
         settoken(result.token)
+        setuser(result.user)
+        
         localStorage.setItem('user',JSON.stringify(result.user));
 
-        navigate(`/editor/${result.token}`, { state: result.user });
+        navigate(`/editor/${result.token}`);
         return;
       }
       seterror(result.message);
@@ -52,7 +53,7 @@ export default function AuthForm() {
     if (result.success) {
       localStorage.clear();
       alert("sign up successfully please go to login");
-      navigate(`/editor/${result.token}`, { state: result.user });
+      navigate(`/`);
       return;
     }
     seterror(result.message);
