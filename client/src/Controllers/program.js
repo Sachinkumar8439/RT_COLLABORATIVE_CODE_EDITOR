@@ -35,7 +35,7 @@ const deleteProgram = async (route, userKey, programkey) => {
   try {
     const response = await apiRequest("delete", `${BASE_URL}${route}`, {
       userKey,
-      programkey,
+      id:programkey,
     });
     return response;
   } catch (error) {

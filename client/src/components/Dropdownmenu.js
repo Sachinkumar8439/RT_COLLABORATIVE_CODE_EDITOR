@@ -14,10 +14,11 @@ const DropdownMenu = ({
   currentfile,
   setcurrentfile,
   fileref,
+  setcontent
 }) => {
   const menuRef = useRef();
   const navigate = useNavigate();
-  const { token, settoken, setfiles } = useContext(StateContext);
+  const { token, settoken, setfiles} = useContext(StateContext);
   const [filemenudata, setfilemenudata] = useState(null);
 
   const [menuVisible, setMenuVisible] = useState(false);
@@ -26,7 +27,7 @@ const DropdownMenu = ({
   const handleRightClick = (e) => {
     setfilemenudata(null);
     e.preventDefault(); 
-    setMenuPosition({ top: e.clientY, left: e.clientX });
+    setMenuPosition({ top: e.clientY, left: e.width - e.clientX });
     const fileDataString = e.currentTarget.dataset.thisfile;
     const fileData = JSON.parse(fileDataString);
     if (fileData.liveLinkExpiredAt) {
@@ -49,6 +50,33 @@ const DropdownMenu = ({
     setfilemenudata(fileData);
     setMenuVisible(true);
   };
+
+  const handlefiledelete = async (data)=>{
+      // e.preventDefault();
+      console.log(data);
+   const response = await program.deleteProgram('/delete-file','blabla',data._id);
+   if(!response.success){
+    alert(response.message);
+   }
+   setfiles(pre=> {
+   const newfiles = pre?.filter(f=> f._id !==data._id)
+    if(newfiles.length){
+      setcurrentfile(newfiles[0])
+      localStorage.setItem("lastfile", JSON.stringify(newfiles[0]));
+    }else{
+      setcurrentfile(null);
+      setcontent("");
+      localStorage.removeItem("lastfile");
+      
+    }
+    return newfiles || [];
+  }
+)
+  onClose();
+   setMenuVisible(false);
+   console.log(response);
+      
+  }
 
   const handleClickOutside = (e) => {
     if (e.target.closest(".menu") === null) {
@@ -235,7 +263,7 @@ const DropdownMenu = ({
             borderRadius: "5px",
             listStyle: "none",
             boxShadow: "0px 0px 5px rgba(0, 0, 0, 0.2)",
-            zIndex: 5001,
+            zIndex: 5000,
           }}
         >
           <li className="menu-item" onClick={handlelink}>
@@ -254,7 +282,8 @@ const DropdownMenu = ({
             </li>
           )}
 
-          <li className="menu-item">Rename</li>
+          <li  className="menu-item">Rename</li>
+          <li onClick={()=> handlefiledelete(filemenudata)} className="menu-item">Delete</li>
         </ul>
       )}
     </>

@@ -15,7 +15,7 @@ const lastfile = JSON.parse(localStorage.getItem("lastfile"));
 const match =
   monacoFormatLang.find(
     (val) => val.extension === (lastfile && lastfile.extension)
-  ) || null;
+  ) || [];
 
 export const Codingsection = ({ user, sethtmlcode, setShowPreview }) => {
   const [token, settoken] = useState(localStorage.getItem("token"));
@@ -223,7 +223,7 @@ export const Codingsection = ({ user, sethtmlcode, setShowPreview }) => {
       ) {
         settoken(null);
         localStorage.clear();
-        window.location.href = "/notice";
+        // window.location.href = "/notice";
       }
     }
   };
